@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>ESL Study Map — 영국 · 아일랜드 · 몰타 어학연수 지도</title>
+<meta name="description" content="영국·아일랜드·몰타 어학연수 학교·기숙사 지도. 도시와 어학원을 지도에서 비교하고 학교 공식 홈페이지로 바로 이동하세요. 특정 유학원과 무관한 무료 정보 지도입니다.">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --blue:#0071e3; --blue-d:#0060c0; --navy:#0F2B46; --ink:#1d1d1f;
+  --body:#3f4650; --mut:#86868b; --line:#e3e6ea; --bg:#f5f5f7;
+  --sh:0 6px 24px rgba(15,43,70,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Noto Sans KR",sans-serif;color:var(--ink);overflow:hidden}
+
+/* ── 헤더 ── */
+header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgba(255,255,255,.94);
+  backdrop-filter:saturate(180%) blur(16px);-webkit-backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:0 14px}
+.brand{display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.brand img{height:17px;display:block}
+.brand span{font-size:12.5px;font-weight:700;color:var(--ink);border-left:1px solid var(--line);padding-left:9px;letter-spacing:-.01em}
+.filters{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+.filters::-webkit-scrollbar{display:none}
+.fc{border:1px solid var(--line);background:#fff;color:var(--body);font-size:11.5px;font-weight:700;
+  padding:5px 11px;border-radius:980px;cursor:pointer;white-space:nowrap;transition:all .18s ease}
+.fc:hover{border-color:#c8ccd2}
+.fc.on{background:var(--navy);border-color:var(--navy);color:#fff}
+
+/* ── 지도 ── */
+#map{position:fixed;inset:52px 0 0 0;z-index:1;background:#dfe8ef}
+.leaflet-control-attribution{font-size:9px}
+
+/* ── 범례 ── */
+.legend{position:fixed;right:12px;bottom:12px;z-index:20;background:rgba(255,255,255,.96);
+  border:1px solid var(--line);border-radius:11px;padding:9px 11px;box-shadow:var(--sh);
+  font-size:11px;color:var(--body);display:flex;flex-direction:column;gap:6px}
+@media(max-width:860px){.legend{display:none}}
+.lg{display:flex;align-items:center;gap:7px}
+.lg i{width:11px;height:11px;border-radius:50%;display:block;flex-shrink:0}
+.lg i.r{background:#fff;border:2px solid var(--navy);width:9px;height:9px}
+
+/* ── 지도 핀 ── */
+.pin{cursor:pointer;user-select:none}
+.city-pin .bub{display:flex;align-items:center;gap:6px;background:var(--navy);color:#fff;
+  border-radius:980px;padding:5px 12px 5px 6px;box-shadow:0 3px 10px rgba(15,43,70,.35);
+  font-size:12.5px;font-weight:700;white-space:nowrap;transition:transform .15s ease}
+.city-pin:hover .bub{transform:scale(1.06)}
+.city-pin .cnt{background:var(--blue);border-radius:980px;min-width:21px;height:21px;
+  display:flex;align-items:center;justify-content:center;font-size:11.5px;padding:0 6px}
+.city-pin .tail{width:2px;height:9px;background:var(--navy);margin:0 auto;border-radius:0 0 2px 2px}
+.dot .body{width:34px;height:34px;border-radius:50%;background:#fff;border:2.5px solid var(--navy);
+  display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;
+  box-shadow:0 2px 8px rgba(15,43,70,.3);transition:transform .15s ease;overflow:hidden}
+.dot .body img{width:24px;height:24px;object-fit:contain}
+.dot:hover .body{transform:scale(1.1)}
+.dot.sel .body{box-shadow:0 0 0 5px rgba(0,113,227,.28),0 2px 8px rgba(15,43,70,.3)}
+.dot.res .body{width:26px;height:26px;border-width:2px}
+.dot .dlbl{text-align:center;font-size:9.5px;font-weight:900;margin-top:3px;text-shadow:0 1px 3px #fff,0 0 6px #fff}
+
+/* ── 인트로 오버레이 ── */
+#intro{position:fixed;inset:0;z-index:50;background:linear-gradient(168deg,#000 0%,#0a1420 55%,#0F2B46 100%);
+  display:none;overflow-y:auto;color:#f5f5f7}
+#intro.show{display:flex;flex-direction:column;align-items:center;justify-content:center}
+.intro-in{width:min(480px,92vw);padding:48px 0 24px;text-align:center}
+.intro-brand{height:24px;filter:brightness(0) invert(1);opacity:.92;margin-bottom:28px}
+#intro h1{font-size:clamp(26px,6vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.25;margin-bottom:10px}
+#intro .sub{font-size:14.5px;color:#9aa4af;line-height:1.65;margin-bottom:30px;font-weight:400}
+.cc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:18px;
+  overflow:hidden;cursor:pointer;transition:all .22s ease;text-align:left;margin-bottom:14px}
+.cc:hover{background:rgba(255,255,255,.1);border-color:rgba(0,113,227,.6);transform:translateY(-2px)}
+.cc-img{height:104px;position:relative;background-size:cover;background-position:center}
+.cc-uk{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#00247D,#1a3a6b 45%,#8b1a2b)}
+.cc-ie{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#0f7a45,#0a5c34 55%,#c97a12)}
+.cc-mt{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#b31e2e,#8f1624 55%,#5a6b78)}
+.cc-flag{position:absolute;right:18px;bottom:8px;font-size:38px;opacity:.92;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.cc-img .cc-cap{position:absolute;left:18px;bottom:12px;font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.75);font-weight:700;text-transform:uppercase}
+.cc-main{display:flex;align-items:center;justify-content:space-between;padding:15px 18px}
+.cc-name{font-size:18px;font-weight:800;letter-spacing:-.02em}
+.cc-name span{font-size:11.5px;color:#8b95a1;font-weight:600;margin-left:8px;letter-spacing:.08em}
+.cc-stat{font-size:12.5px;color:#9aa4af;font-weight:500}
+.cc-go{color:var(--blue);font-size:13px;font-weight:800;white-space:nowrap}
+.quick{display:flex;gap:8px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+.quick a{font-size:12px;color:#9aa4af;text-decoration:none;border:1px solid rgba(255,255,255,.16);
+  border-radius:980px;padding:7px 14px;transition:all .18s ease;font-weight:600}
+.quick a:hover{color:#fff;border-color:rgba(255,255,255,.4)}
+.intro-foot{padding:26px 0 34px;font-size:11px;color:#5c6570}
+
+/* ── 패널 ── */
+#panel{position:fixed;z-index:25;background:#fff;box-shadow:var(--sh);display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:861px){
+  #panel{top:66px;left:14px;width:392px;bottom:14px;border-radius:18px;border:1px solid var(--line)}
+  #grab{display:none}
+}
+@media(max-width:860px){
+  #panel{left:0;right:0;bottom:0;top:auto;height:46vh;border-radius:18px 18px 0 0;
+    transform:translateY(calc(100% - 54px));transition:transform .28s cubic-bezier(.2,.8,.25,1);}
+  #panel.open{transform:translateY(0)}
+  #panel.full{height:calc(100vh - 64px);transform:translateY(0)}
+  #grab{height:22px;display:flex;align-items:center;justify-content:center;cursor:grab;flex-shrink:0}
+  #grab::before{content:"";width:40px;height:4.5px;border-radius:3px;background:#d5d9de}
+}
+#ptop{display:flex;align-items:center;gap:9px;padding:12px 16px;border-bottom:1px solid var(--line);flex-shrink:0}
+#back{width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--body);
+  font-size:17px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0}
+#back.show{display:flex}
+#ptitle{font-size:16.5px;font-weight:800;letter-spacing:-.02em;flex-grow:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pcount{font-size:11.5px;color:var(--mut);font-weight:600;white-space:nowrap}
+#home{width:28px;height:28px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--body);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#pbody{overflow-y:auto;flex-grow:1;padding:6px 16px 18px;overscroll-behavior:contain}
+
+/* 패널 내부 요소 */
+.row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid #f0f1f3;cursor:pointer;transition:background .15s ease}
+.row:hover{background:#fafbfc}
+.badge{width:38px;height:38px;border-radius:12px;color:#fff;font-size:11px;font-weight:900;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.badge.logo{background:#fff}
+.badge.logo img{width:30px;height:30px;object-fit:contain}
+.cityimg{height:124px;border-radius:14px;background-size:cover;background-position:center;margin:10px 0 14px}
+.rmain{flex-grow:1;min-width:0}
+.rt{font-size:14.5px;font-weight:700;letter-spacing:-.01em}
+.rt span{color:#b4bcc5;font-weight:500;font-size:12px;margin-left:5px}
+.rs{font-size:12px;color:var(--mut);margin-top:2px;line-height:1.45;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chev{color:#c3c9cf;font-size:16px;flex-shrink:0}
+.sec{padding:14px 0;border-bottom:1px solid #f0f1f3}
+.sec:last-child{border-bottom:none}
+.st{font-size:11.5px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-bottom:9px}
+.desc{font-size:13.5px;line-height:1.7;color:var(--body)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+.tag{font-size:11.5px;font-weight:600;color:var(--body);background:var(--bg);border:1px solid #ebedf0;border-radius:8px;padding:5px 10px}
+.hd{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+.hd h2{font-size:19px;font-weight:800;letter-spacing:-.02em;line-height:1.3}
+.hd p{font-size:12.5px;color:var(--mut);margin-top:2px;font-weight:600}
+.kv{display:flex;gap:12px;padding:8px 0;border-bottom:1px dashed #eef0f2;font-size:13px}
+.kv:last-child{border-bottom:none}
+.kv dt{color:var(--mut);font-weight:600;width:76px;flex-shrink:0}
+.kv dd{color:var(--body);line-height:1.55}
+.hi{background:#f0f7ff;border:1px solid #d7e8fb;border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.65;color:#274b6d}
+.hi b{display:block;color:var(--blue);font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.price-box{display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);
+  border-radius:12px;padding:13px 15px;margin-top:4px}
+.price-box .pl{font-size:12px;color:var(--mut);font-weight:600}
+.price-box .pv{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-.01em}
+.cta{display:flex;gap:8px;padding:16px 0 4px}
+.cta a{flex-grow:1;text-align:center;text-decoration:none;font-size:14px;font-weight:700;
+  border-radius:980px;padding:13px 10px;transition:all .18s ease}
+.cta .p{background:var(--blue);color:#fff}
+.cta .p:hover{background:var(--blue-d)}
+.cta .s{background:#fff;color:var(--ink);border:1px solid #d2d2d7;flex-grow:0;padding:13px 18px}
+.cta .s:hover{background:var(--bg)}
+.link-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg);
+  border-radius:12px;padding:12px 15px;margin-top:8px;text-decoration:none;transition:background .15s ease}
+.link-row:hover{background:#eceef1}
+.link-row .lt{font-size:13px;font-weight:700;color:var(--ink)}
+.link-row .ls{font-size:11.5px;color:var(--mut);margin-top:1px}
+.link-row .la{color:var(--blue);font-size:12px;font-weight:800;white-space:nowrap}
+.empty{padding:34px 0;text-align:center;font-size:13px;color:var(--mut)}
+.ctabs{display:flex;gap:6px;padding:12px 0 8px}
+.ctabs button{flex:1;border:1px solid var(--line);background:#fff;color:var(--body);font-size:12.5px;
+  font-weight:700;padding:8px 0;border-radius:10px;cursor:pointer;transition:all .18s ease}
+.ctabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+a:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+/* 언어 선택 */
+.langs{display:inline-flex;border:1px solid rgba(255,255,255,.22);border-radius:99px;overflow:hidden;margin-bottom:26px}
+.langs button{background:transparent;border:none;color:#9aa4af;font-size:11.5px;font-weight:700;
+  padding:6px 14px;cursor:pointer;font-family:inherit;transition:all .18s ease}
+.langs button.on{background:#fff;color:#0F2B46}
+.langs.mini{border-color:var(--line);margin:0;flex:none}
+.langs.mini button{color:var(--mut);padding:5px 10px;font-size:11px}
+.langs.mini button.on{background:var(--navy);color:#fff}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand" onclick="goHome()">
+    <span style="font-weight:900;font-size:14.5px;color:var(--navy);letter-spacing:-.2px;white-space:nowrap">🗺️ ESL Study Map</span>
+    <span id="hsub">어학연수 학교 지도</span>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="langs mini" id="langs-head"></div>
+</header>
+
+<div id="map"></div>
+
+<div class="legend" id="legend"></div>
+
+<div id="intro" class="show">
+  <div class="intro-in">
+    <div style="font-weight:900;font-size:22px;color:#fff;letter-spacing:-.3px;margin-bottom:14px">🗺️ ESL Study Map</div>
+    <div><div class="langs" id="langs-intro"></div></div>
+    <h1 id="ih1">어학연수,<br>지도에서 시작하세요.</h1>
+    <p class="sub" id="isub">국가와 도시를 고르고, 어학원을 비교하고, 공식 홈페이지까지 바로.<br>특정 유학원과 무관한 무료 어학연수 지도입니다.</p>
+    <div class="cc" onclick="selectCountry('uk')">
+      <div class="cc-img cc-uk"><span class="cc-cap">United Kingdom</span><span class="cc-flag">🇬🇧</span></div>
+      <div class="cc-main">
+        <div>
+          <div class="cc-name"><b id="cn-uk" style="font-weight:inherit">영국</b><span>UK</span></div>
+          <div class="cc-stat" id="stat-uk"></div>
+        </div>
+        <div class="cc-go">지도 열기 ›</div>
+      </div>
+    </div>
+    <div class="cc" onclick="selectCountry('ie')">
+      <div class="cc-img cc-ie"><span class="cc-cap">Ireland</span><span class="cc-flag">🇮🇪</span></div>
+      <div class="cc-main">
+        <div>
+          <div class="cc-name"><b id="cn-ie" style="font-weight:inherit">아일랜드</b><span>IRELAND</span></div>
+          <div class="cc-stat" id="stat-ie"></div>
+        </div>
+        <div class="cc-go">지도 열기 ›</div>
+      </div>
+    </div>
+    <div class="cc" onclick="selectCountry('mt')">
+      <div class="cc-img cc-mt"><span class="cc-cap">Malta</span><span class="cc-flag">🇲🇹</span></div>
+      <div class="cc-main">
+        <div>
+          <div class="cc-name"><b id="cn-mt" style="font-weight:inherit">몰타</b><span>MALTA</span></div>
+          <div class="cc-stat" id="stat-mt"></div>
+        </div>
+        <div class="cc-go">지도 열기 ›</div>
+      </div>
+    </div>
+  </div>
+  <div class="intro-foot">ⓒ ESL Study Map — 정보 제공 목적의 무료 페이지입니다. 학비·과정은 각 학교 공식 사이트 기준이 우선합니다.</div>
+</div>
+
+<div id="panel">
+  <div id="grab"></div>
+  <div id="ptop">
+    <button id="back" aria-label="뒤로">‹</button>
+    <div id="ptitle">영국 전체</div>
+    <div id="pcount"></div>
+    <button id="home" title="처음 화면으로" aria-label="처음 화면으로"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 2 12h3v8h6v-5h2v5h6v-8h3z"/></svg></button>
+  </div>
+  <div id="pbody"></div>
+</div>
+
+<script src="res-data.js"></script>
+<script src="i18n.js"></script>
+<script>
+/* ═══════════ 언어 ═══════════ */
+let lang = localStorage.getItem("esl-map-lang") || "ko";
+const t = k => (UI[lang] && UI[lang][k] !== undefined) ? UI[lang][k] : UI.ko[k];
+const ctryName = k => lang === "ko" ? CTRY[k].ko : L10N[lang].ctry[k];
+const cityName = c => lang === "ko" ? c.ko : (lang === "en" ? c.en : ((L10N.zh.cities[c.id] || {}).name || c.en));
+const cityTr = (c, f) => ((L10N[lang] || {}).cities || {})[c.id]?.[f] ?? c[f];
+const schoolTr = (k, f) => ((L10N[lang] || {}).schools || {})[k]?.[f] ?? SCHOOLS[k][f];
+const pointTr = c => ((L10N[lang] || {}).campuses || {})[c.id] ?? c.point;
+const resTr = v => lang === "ko" ? v : ((RES_PH[lang] || {})[v] ?? v);
+/* ═══════════ 데이터 (학교 공식 홈페이지 연동) ═══════════ */
+const SCHOOL_SITE = c => (SCHOOLS[c.school] || {}).site || "";
+const CITY_IMG = {};
+
+const SCHOOLS = {
+  kaplan:    { site:"https://www.kaplaninternational.com/", name:"Kaplan International Languages", ko:"카플란", col:"#0B63CE", abbr:"KAP",
+               tag:"글로벌 대표 어학 교육기관",
+               feats:["K+ 자체 학습 시스템","시험 대비 · 대학 진학 과정 강점","검증된 글로벌 만족도"] },
+  ec:    { site:"https://www.ecenglish.com/", name:"EC English Language Centres", ko:"이씨 잉글리시", col:"#EF6C00", abbr:"EC",
+               tag:"다국적 환경의 프리미엄 어학원",
+               feats:["다국적 학생 비율 관리","맞춤형 학습 성과 보장제","문화 경험 중심 액티비티"] },
+  bayswater:    { site:"https://www.bayswater.ac/", name:"Bayswater College", ko:"베이스워터", col:"#00897B", abbr:"BAY",
+               tag:"합리적 비용의 실속형 어학원",
+               feats:["검증된 학생 만족도","3단계 학생 케어 시스템","자격 보유 전문 강사진"] },
+  ces:    { site:"https://www.ces-schools.com/", name:"CES (Centre of English Studies)", ko:"씨이에스", col:"#C2185B", abbr:"CES",
+               tag:"가족적인 분위기의 소규모 명문",
+               feats:["소규모 클래스 집중 관리","낮은 한인 비율","가족적인 학교 분위기"] },
+  ep:    { site:"https://www.englishpath.com/", name:"English Path", ko:"잉글리시 패스", col:"#5C6BC0", abbr:"EP",
+               tag:"진학 · 커리어 연계 특화",
+               feats:["추천율 95% 이상","대학 캠퍼스 연계 시설","진학 & 커리어 프로그램"] },
+  eci:    { site:"https://www.eci.ie/", name:"Emerald Cultural Institute", ko:"에메랄드", col:"#2E7D32", abbr:"ECI",
+               tag:"아일랜드 대표 전통 명문",
+               feats:["오랜 전통의 사립 명문","고풍스러운 캠퍼스","체계적인 커리큘럼"] },
+  atlas:    { site:"https://atlaslanguageschool.com/", name:"Atlas Language School", ko:"아틀라스", col:"#E8A013", abbr:"ATL",
+               tag:"더블린 · 몰타의 인기 사립 어학원",
+               feats:["체계적인 학생 케어","활발한 액티비티","합리적인 장기 과정"] },
+  iels:    { site:"https://www.ielsmalta.com/", name:"IELS Malta", ko:"아이이엘에스", col:"#BF1E2E", abbr:"IELS",
+               tag:"몰타 대표 로컬 명문",
+               feats:["몰타 최대 규모급 역사","슬리에마 중심 위치","다양한 레벨 · 과정"] },
+  cea:    { site:"https://corkenglishacademy.com/", name:"Cork English Academy", ko:"코크 잉글리시", col:"#7B2FBE", abbr:"CEA",
+               tag:"코크의 실속형 어학원",
+               feats:["소도시의 합리적 물가","소규모 수업","친근한 분위기"] },
+  ih:    { site:"https://www.ihlondon.com/", name:"IH London (International House)", ko:"아이에이치 런던", col:"#3B44B5", abbr:"IH",
+               tag:"70년 전통 · CELTA 발상지",
+               feats:["IH World 네트워크 창립 기관","런던 상위 1% 평가 어학원","원어민 교류 언어 교환 프로그램"] },
+  lsi:    { site:"https://www.lsi.edu/", name:"LSI (Language Studies International)", ko:"엘에스아이", col:"#D9483B", abbr:"LSI",
+               tag:"실속 있는 소규모 어학원",
+               feats:["1회 수업 50분으로 긴 편","자체 관리 홈스테이·기숙사","합리적인 학비"] },
+  stgiles:    { site:"https://www.stgiles-international.com/", name:"St Giles International", ko:"세인트 자일스", col:"#E8A013", abbr:"STG",
+               tag:"3대째 가족경영 70년 명문",
+               feats:["한 반 최대 12명 · 평균 10명","호스트 직접 계약 홈스테이","워킹홀리데이 학생 지원"] },
+  ilsc:    { site:"https://www.ilsc.com/", name:"ILSC Language Schools", ko:"아이엘에스씨", col:"#00838F", abbr:"ILSC",
+               tag:"유연한 세션제 커리큘럼",
+               feats:["4주 세션제 · 매주 월요일 등록","Study & Work 프로그램","Job Club 취업 지원"] },
+};
+
+const CITIES = [
+  { id:"london", ko:"런던", en:"London", lat:51.5074, lng:-0.1278,
+    feat:"세계 문화의 수도 · 어학원 선택폭 최다",
+    intro:"전통과 현대가 어우러진 영국의 수도입니다. 세계적인 박물관·갤러리·극장이 밀집해 있고, 가장 많은 어학원이 모여 있어 선택의 폭이 넓습니다. 교통·아르바이트·문화 경험 모든 면에서 기회가 가장 많은 도시입니다.",
+    tags:["문화·예술 중심","대도시 인프라","다양한 국적","높은 물가"] },
+  { id:"brighton", ko:"브라이튼", en:"Brighton", lat:50.8225, lng:-0.1372,
+    feat:"자유로운 예술 감성의 해변 도시",
+    intro:"런던에서 기차로 약 1시간, 잉글랜드 남부의 대표 해변 도시입니다. 예술적이고 개방적인 분위기로 젊은 학생들에게 인기가 많으며, 도시 규모가 적당해 생활 적응이 쉽습니다.",
+    tags:["해변 도시","자유로운 분위기","런던 근교","학생 도시"] },
+  { id:"bournemouth", ko:"본머스", en:"Bournemouth", lat:50.7192, lng:-1.8808,
+    feat:"합리적 물가의 휴양 도시 · 장기 연수 인기",
+    intro:"11km의 백사장이 펼쳐진 잉글랜드 남부의 휴양 도시입니다. 런던 대비 물가가 합리적이라 장기 연수지로 꾸준히 선택받으며, 온화한 기후와 안전한 환경이 장점입니다.",
+    tags:["해변 휴양지","합리적 물가","장기 연수 인기","온화한 기후"] },
+  { id:"oxford", ko:"옥스포드", en:"Oxford", lat:51.7520, lng:-1.2577,
+    feat:"세계적 대학 도시의 면학 분위기",
+    intro:"영어권에서 가장 오래된 대학이 있는 학문의 도시입니다. 도시 전체에 흐르는 아카데믹한 분위기 속에서 공부에 집중하고 싶은 분께 잘 맞으며, 런던까지 버스로 약 1시간 40분입니다.",
+    tags:["대학 도시","면학 분위기","고풍스러운 경관","런던 근교"] },
+  { id:"cambridge", ko:"캠브리지", en:"Cambridge", lat:52.2053, lng:0.1218,
+    feat:"안전하고 아카데믹한 학술 도시",
+    intro:"케임브리지대학교를 중심으로 한 학술·과학의 중심지입니다. 안전하고 차분한 소도시로, 학업 집중도가 높은 환경을 원하는 학생과 학부모가 선호합니다.",
+    tags:["대학 도시","안전한 소도시","학업 집중","펀팅 명소"] },
+  { id:"manchester", ko:"맨체스터", en:"Manchester", lat:53.4808, lng:-2.2426,
+    feat:"활기찬 북부 최대 도시 · 합리적 생활비",
+    intro:"음악과 축구, 산업 유산의 도시이자 잉글랜드 북부 최대 도시입니다. 대도시 인프라를 갖추면서도 생활비가 런던보다 합리적이어서 실속과 도시 생활을 모두 원하는 분께 좋습니다.",
+    tags:["북부 최대 도시","축구·음악","합리적 생활비","대학가"] },
+  { id:"liverpool", ko:"리버풀", en:"Liverpool", lat:53.4084, lng:-2.9916,
+    feat:"비틀즈의 고향 · 친절한 항구 도시",
+    intro:"비틀즈의 고향이자 유네스코 세계유산 항구를 가진 문화 도시입니다. 물가가 저렴하고 사람들이 친절하기로 유명해, 부담 없이 영국 생활을 시작하기 좋은 도시입니다.",
+    tags:["음악의 도시","저렴한 물가","친절한 분위기","항구 경관"] },
+  { id:"leeds", ko:"리즈", en:"Leeds", lat:53.8008, lng:-1.5491,
+    feat:"학생 비율 높은 실속형 대학 도시",
+    intro:"잉글랜드 북부의 대학 도시로 학생 인구 비율이 높아 활기찬 분위기입니다. 생활비 대비 만족도가 높아 실속형 연수지로 주목받고 있습니다.",
+    tags:["대학 도시","실속형 물가","학생 문화","쇼핑 중심지"] },
+  { id:"edinburgh", ko:"에딘버러", en:"Edinburgh", lat:55.9533, lng:-3.1883,
+    feat:"고성과 축제의 스코틀랜드 수도",
+    intro:"고성과 구시가지가 아름다운 스코틀랜드의 수도입니다. 세계 최대 규모의 프린지 축제 등 독특한 문화를 경험할 수 있으며, 잉글랜드와는 또 다른 매력의 연수 생활이 가능합니다.",
+    tags:["스코틀랜드 수도","축제의 도시","아름다운 구시가지","독특한 문화"] },
+  { id:"birmingham", ko:"버밍엄", en:"Birmingham", lat:52.4862, lng:-1.8904,
+    feat:"잉글랜드 제2의 도시 · 신흥 연수지",
+    intro:"잉글랜드 제2의 도시이자 교통의 요지입니다. 최근 재개발로 도시가 빠르게 발전하고 있으며, 물가가 합리적인 실속형 신흥 연수 도시입니다.",
+    tags:["제2의 도시","교통 요지","합리적 물가","신흥 연수지"] },
+  { id:"worthing", ko:"워딩", en:"Worthing", lat:50.8179, lng:-0.3729,
+    feat:"한인 비율 낮은 조용한 해변 소도시",
+    intro:"브라이튼 인근의 조용한 해변 소도시입니다. 한인 비율이 매우 낮아 영어 몰입 환경을 원하는 분께 좋고, 비용도 남부 해안 도시 중 가장 합리적인 편입니다.",
+    tags:["영어 몰입 환경","낮은 한인 비율","조용한 소도시","합리적 비용"] },
+  { id:"bath", ko:"바스", en:"Bath", lat:51.3811, lng:-2.3590,
+    feat:"세계문화유산의 품격 있는 소도시",
+    intro:"로마 유적과 조지안 건축이 아름다운 도시 전체가 세계문화유산입니다. 안전하고 품격 있는 환경에서 차분하게 공부할 수 있는 소도시입니다.",
+    tags:["세계문화유산","로마 유적","안전한 소도시","품격 있는 경관"] },
+  { id:"eastbourne", ko:"이스트본", en:"Eastbourne", lat:50.7687, lng:0.2845,
+    feat:"영국에서 가장 화창한 안전한 해안 도시",
+    intro:"런던에서 기차로 약 1시간 30분, 영국에서 일조량이 가장 많은 해안 도시입니다. 매우 안전하고 한적해 어린 학생과 학부모가 선호하며, 생활비도 남부 도시 중 저렴한 편입니다.",
+    tags:["해안 도시","안전함","낮은 한인 비율","저렴한 생활비"] },
+  { id:"torquay", ko:"토키", en:"Torquay", lat:50.4619, lng:-3.5253,
+    feat:"영국 남서부의 여유로운 휴양 도시",
+    intro:"'영국의 리비에라'로 불리는 남서부의 휴양 도시입니다. 아름다운 해안 경관과 항구, 아가사 크리스티 투어 같은 이색 즐길거리가 있으며, 조용하고 안전한 환경에서 공부할 수 있습니다.",
+    tags:["휴양 도시","해변·항구","조용한 소도시","자연경관"] },
+  /* ── 아일랜드 ── */
+  { country:"ie", id:"dublin", ko:"더블린", en:"Dublin", lat:53.3498, lng:-6.2603,
+    feat:"지식과 문화의 도시 · 아일랜드 연수의 중심",
+    intro:"오랜 역사와 독특한 문화를 간직한 아일랜드의 수도이자 어학연수의 중심지입니다. 아일랜드 연수생의 대부분이 선택하는 도시로, 글로벌 IT 기업 유럽 본사가 밀집해 있어 활기차고 국제적인 분위기입니다.",
+    tags:["아일랜드 수도","지식과 문화","국제적 분위기","워킹홀리데이 연계"] },
+  { country:"ie", id:"cork", ko:"코크", en:"Cork", lat:51.8985, lng:-8.4756,
+    feat:"여유롭고 따뜻한 아일랜드 제2의 도시",
+    intro:"여유로운 생활환경과 따뜻한 분위기의 아일랜드 제2의 도시입니다. 더블린보다 물가가 저렴하고 도시가 컴팩트해 도보 생활이 가능하며, 차분하게 공부에 집중할 수 있습니다.",
+    tags:["여유로운 분위기","저렴한 물가","도보 생활권","친절한 도시"] },
+  /* ── 몰타 ── */
+  { country:"mt", id:"stjulians", ko:"세인트줄리안스", en:"St. Julians", lat:35.9042, lng:14.4884,
+    feat:"카페·해변이 즐비한 학생 친화 휴양지",
+    intro:"카페, 레스토랑, 해변이 즐비한 몰타 어학연수의 중심지입니다. 학생 친화적인 생활 환경과 지중해 휴양지 분위기를 동시에 누릴 수 있어 가장 인기가 많습니다.",
+    tags:["연수 중심지","지중해 휴양지","활기찬 분위기","생활 인프라"] },
+  { country:"mt", id:"sliema", ko:"슬리에마", en:"Sliema", lat:35.9122, lng:14.5042,
+    feat:"쇼핑·상업 중심의 현대적 해안 도시",
+    intro:"몰타의 대표 쇼핑·상업 중심지로 생활 편의성이 뛰어납니다. 현지인 거주 비율이 높아 세인트줄리안스보다 차분한 분위기에서 공부할 수 있습니다.",
+    tags:["쇼핑 중심지","생활 편의","차분한 분위기","해안 산책로"] },
+  { country:"mt", id:"pembroke", ko:"펨브로크", en:"Pembroke", lat:35.9308, lng:14.4767,
+    feat:"조용한 주거지역의 몰입 환경",
+    intro:"세인트줄리안스 북쪽의 조용한 주거지역입니다. 번화가와 가까우면서도 차분한 환경이라, 공부에 집중하면서 필요할 때만 시내로 나가는 생활이 가능합니다.",
+    tags:["조용한 주거지역","공부 집중","번화가 인접","합리적 환경"] },
+];
+
+const CAMPUSES = [
+  { id:"kaplan-london", school:"kaplan", city:"london", name:"Kaplan London", edm:9, price:"₩2,964,203",
+    point:"코벤트가든 인근 중심가 캠퍼스. 시험 대비 과정과 방과후 액티비티가 활발합니다." },
+  { id:"ec-london", school:"ec", city:"london", name:"EC London", edm:2111, price:"₩3,244,600",
+    point:"유스턴 지역의 현대적 캠퍼스. 30+ 전용 과정도 운영되어 성인 연수생에게 인기입니다." },
+  { id:"bayswater-london", school:"bayswater", city:"london", name:"Bayswater London", edm:232, price:"₩3,004,260",
+    point:"트렌디한 캠퍼스 분위기와 합리적인 학비. 디지털 마케팅 등 특화 과정도 있습니다." },
+  { id:"ces-london", school:"ces", city:"london", name:"CES London", edm:109, price:"₩2,203,124",
+    point:"윔블던의 조용한 주택가 캠퍼스. 런던 어학원 중 가격 경쟁력이 높은 편입니다." },
+  { id:"ep-london", school:"ep", city:"london", name:"English Path London", edm:5194, price:"₩3,244,600",
+    point:"카나리워프 비즈니스 지구 위치. 진학·커리어 연계 프로그램이 강점입니다." },
+  { id:"ec-brighton", school:"ec", city:"brighton", name:"EC Brighton", edm:260, price:"₩3,084,373",
+    point:"해변 인근의 밝은 캠퍼스. 다국적 학생 비율 관리가 잘 되어 있습니다." },
+  { id:"bayswater-brighton", school:"bayswater", city:"brighton", name:"Bayswater Brighton", edm:236, price:"₩2,723,862",
+    point:"시내 중심 위치. 브라이튼에서 실속 있게 공부하려는 분께 좋습니다." },
+  { id:"kaplan-bournemouth", school:"kaplan", city:"bournemouth", name:"Kaplan Bournemouth", edm:44, price:"₩2,323,294",
+    point:"해변까지 도보 거리. 카플란 영국 캠퍼스 중 가장 합리적인 학비입니다." },
+  { id:"bayswater-bournemouth", school:"bayswater", city:"bournemouth", name:"Bayswater Bournemouth", edm:235, price:"₩2,283,237",
+    point:"장기 연수 할인이 좋은 실속형 캠퍼스입니다." },
+  { id:"ces-oxford", school:"ces", city:"oxford", name:"CES Oxford", edm:2030, price:"₩2,203,124",
+    point:"대학 도시의 면학 분위기 속 소규모 클래스. 한인 비율이 낮습니다." },
+  { id:"kaplan-cambridge", school:"kaplan", city:"cambridge", name:"Kaplan Cambridge", edm:46, price:"₩2,723,862",
+    point:"시내 중심의 전통 있는 캠퍼스. 시험 대비 과정이 강합니다." },
+  { id:"ec-cambridge", school:"ec", city:"cambridge", name:"EC Cambridge", edm:259, price:"₩3,004,260",
+    point:"아카데믹한 도시 분위기와 EC 특유의 체계적 커리큘럼." },
+  { id:"kaplan-manchester", school:"kaplan", city:"manchester", name:"Kaplan Manchester", edm:1513, price:"₩2,723,862",
+    point:"북부 최대 도시의 중심가 캠퍼스. 대도시 생활을 실속 있게 즐길 수 있습니다." },
+  { id:"ec-manchester", school:"ec", city:"manchester", name:"EC Manchester", edm:2552, price:"₩3,044,316",
+    point:"세인트피터스 광장 인근의 현대적 시설." },
+  { id:"kaplan-liverpool", school:"kaplan", city:"liverpool", name:"Kaplan Liverpool", edm:2436, price:"₩2,403,408",
+    point:"친절한 도시 분위기와 합리적 학비의 조합." },
+  { id:"bayswater-liverpool", school:"bayswater", city:"liverpool", name:"Bayswater Liverpool", edm:4947, price:"₩2,283,237",
+    point:"영국 전체에서 손꼽히는 가성비 캠퍼스입니다." },
+  { id:"bayswater-leeds", school:"bayswater", city:"leeds", name:"Bayswater Leeds", edm:5718, price:"₩2,283,237",
+    point:"학생 도시 리즈의 실속형 선택지." },
+  { id:"ces-leeds", school:"ces", city:"leeds", name:"CES Leeds", edm:2028, price:"₩2,042,896",
+    point:"이번 데이터 기준 영국 최저가 수준. 소규모 클래스로 집중 관리됩니다." },
+  { id:"ep-leeds", school:"ep", city:"leeds", name:"English Path Leeds", edm:5196, price:"₩3,044,316",
+    point:"대학 캠퍼스 연계 시설을 사용하는 것이 특징입니다." },
+  { id:"ces-edinburgh", school:"ces", city:"edinburgh", name:"CES Edinburgh", edm:3582, price:"₩2,203,124",
+    point:"스코틀랜드 수도에서 가족적인 분위기로 공부할 수 있습니다." },
+  { id:"ep-birmingham", school:"ep", city:"birmingham", name:"English Path Birmingham", edm:5195, price:"₩3,044,316",
+    point:"신흥 연수지 버밍엄의 대표 선택지." },
+  { id:"ces-worthing", school:"ces", city:"worthing", name:"CES Worthing", edm:194, price:"₩1,962,783",
+    point:"이번 데이터 기준 최저가 캠퍼스. 영어 몰입 환경을 원한다면 최적입니다." },
+  { id:"kaplan-bath", school:"kaplan", city:"bath", name:"Kaplan Bath", edm:1512, price:"₩2,643,748",
+    point:"세계문화유산 도시의 유일한 대형 브랜드 캠퍼스입니다." },
+  /* ── 2026-07 추가: IH · LSI · St Giles · Kaplan 확장 (종로 지도 대조) ── */
+  { id:"ih-london", school:"ih", city:"london", name:"IH London", edm:35, price:"₩3,560,195",
+    point:"코벤트가든 중심의 70년 전통 명문. CELTA 발상지로 교사진 수준이 높고, 원어민 3,500명+ 언어 교환 프로그램이 특징입니다." },
+  { id:"kaplan-london-30plus", school:"kaplan", city:"london", name:"Kaplan London 30+", edm:5071, price:"₩3,200,176",
+    point:"만 30세 이상 전용 센터. 블룸즈버리의 차분한 분위기에서 비슷한 연령대와 공부할 수 있습니다." },
+  { id:"lsi-london", school:"lsi", city:"london", name:"LSI London Central", edm:125, price:"₩2,190,120", unit:"3주",
+    point:"대영박물관 도보권의 대학가 캠퍼스. 1회 수업이 50분으로 길어 교사와의 접촉 시간이 많습니다." },
+  { id:"stgiles-london-central", school:"stgiles", city:"london", name:"St Giles London Central", edm:80, price:"₩2,544,139", unit:"3주",
+    point:"학교 건물 안에 온사이트 기숙사가 있어 통학 부담이 없습니다. 워킹홀리데이 학생 지원이 활발합니다." },
+  { id:"stgiles-london-highgate", school:"stgiles", city:"london", name:"St Giles London Highgate", edm:188, price:"₩2,340,128", unit:"3주",
+    point:"런던 3존의 조용한 녹지 지역. 만 14세부터 주니어 프로그램을 연중 운영해 10대에게 적합합니다." },
+  { id:"lsi-brighton", school:"lsi", city:"brighton", name:"LSI Brighton", edm:127, price:"₩2,190,120", unit:"3주",
+    point:"온사이트 기숙사 Portland 55 보유. 한국 학생 비율 1% 수준의 몰입 환경입니다." },
+  { id:"stgiles-brighton", school:"stgiles", city:"brighton", name:"St Giles Brighton", edm:139, price:"₩2,472,135", unit:"3주",
+    point:"세인트 자일스 영국 캠퍼스 중 최대 규모. 해변·시내 도보 10분에 소셜 프로그램이 활발합니다." },
+  { id:"lsi-cambridge", school:"lsi", city:"cambridge", name:"LSI Cambridge", edm:129, price:"₩2,190,120", unit:"3주",
+    point:"정원이 있는 소규모 센터. 자체 기숙사 The Willows가 시내 중심부에 있습니다." },
+  { id:"stgiles-cambridge", school:"stgiles", city:"cambridge", name:"St Giles Cambridge", edm:4082, price:"₩2,292,126", unit:"3주",
+    point:"평균 45명 규모의 가족적인 센터. 한인 비율이 낮고 학비가 합리적입니다." },
+  { id:"stgiles-eastbourne", school:"stgiles", city:"eastbourne", name:"St Giles Eastbourne", edm:138, price:"₩2,268,124", unit:"3주",
+    point:"영국 최저 수준의 학비·생활비. 안전하고 한적해 어린 10대 학생에게 적합합니다." },
+  { id:"kaplan-edinburgh", school:"kaplan", city:"edinburgh", name:"Kaplan Edinburgh", edm:206, price:"₩2,640,145",
+    point:"British Council 선정 에딘버러 Top 3. 고풍스러운 18세기풍 건물에서 공부합니다." },
+  { id:"kaplan-oxford", school:"kaplan", city:"oxford", name:"Kaplan Oxford", edm:48, price:"₩2,720,149",
+    point:"British Council 평가 영국 Top 5% 어학교. 영국 카플란 중 최대 규모 교내 카페테리아를 운영합니다." },
+  { id:"kaplan-torquay", school:"kaplan", city:"torquay", name:"Kaplan Torquay", edm:335, price:"₩2,400,132",
+    point:"교내 수영장을 갖춘 소규모 가족적 센터. 휴양 도시의 조용하고 안전한 학업 환경입니다." },
+  /* ── 아일랜드 ── */
+  { id:"kaplan-dublin", school:"kaplan", city:"dublin", name:"Kaplan Dublin", edm:303, price:"₩2,520,795",
+    point:"시내 중심 위치. 글로벌 브랜드의 체계적인 시스템으로 첫 유럽 연수도 적응이 쉽습니다." },
+  { id:"ec-dublin", school:"ec", city:"dublin", name:"EC Dublin", edm:4418, price:"₩2,588,924",
+    point:"더블린 중심가의 현대적 캠퍼스. 다국적 학생 비율 관리가 잘 되어 있습니다." },
+  { id:"ces-dublin", school:"ces", city:"dublin", name:"CES Dublin", edm:231, price:"₩2,418,600",
+    point:"CES의 본교 캠퍼스. 더블린 시내 중심의 오랜 전통 명문입니다." },
+  { id:"ep-dublin", school:"ep", city:"dublin", name:"English Path Dublin", edm:3704, price:"₩2,588,924",
+    point:"모닝 과정 중심의 합리적인 구성이 인기입니다." },
+  { id:"eci-dublin", school:"eci", city:"dublin", name:"Emerald Cultural Institute", edm:237, price:"₩2,554,860",
+    point:"아일랜드 대표 전통 사립 명문. 고급스러운 캠퍼스와 탄탄한 커리큘럼이 강점입니다." },
+  { id:"atlas-dublin", school:"atlas", city:"dublin", name:"Atlas Dublin", edm:2424, price:"₩10,117,245", unit:"25주",
+    point:"장기 연수 패키지가 강점. 워킹홀리데이 준비 학생에게 인기가 많습니다." },
+  { id:"ilsc-dublin", school:"ilsc", city:"dublin", name:"ILSC Dublin", edm:5768, price:"₩2,046,852",
+    point:"더블린 리버티스 중심의 세션제 캠퍼스. Study & Work 프로그램으로 학업과 근무 병행을 준비할 수 있습니다." },
+  { id:"cea-cork", school:"cea", city:"cork", name:"Cork English Academy", edm:3060, price:"₩1,021,944",
+    point:"코크의 대표 선택지. 소도시 물가로 비용 부담이 적고 한인 비율이 낮습니다." },
+  /* ── 몰타 ── */
+  { id:"ec-malta", school:"ec", city:"stjulians", name:"EC Malta", edm:437, price:"₩2,043,888",
+    point:"세인트줄리안스 중심의 몰타 인기 1순위 캠퍼스. 유럽 각국 학생들과 어울리기 좋습니다." },
+  { id:"ep-malta", school:"ep", city:"stjulians", name:"English Path Malta", edm:5198, price:"₩2,009,823",
+    point:"유럽 연수 중 손꼽히는 가성비. 시설 대비 학비가 합리적입니다." },
+  { id:"iels-malta", school:"iels", city:"sliema", name:"IELS Malta", edm:443, price:"₩1,650,439", unit:"2주",
+    point:"슬리에마 중심의 몰타 대표 로컬 명문. 오랜 역사와 규모를 갖췄습니다." },
+  { id:"atlas-malta", school:"atlas", city:"pembroke", name:"Atlas Malta", edm:4366, price:"₩1,362,592",
+    point:"조용한 펨브로크 주거지역. 차분한 환경에서 합리적 비용으로 공부할 수 있습니다." },
+];
+
+/* ═══════════ 국가 ═══════════ */
+const CTRY = {
+  uk: { ko:"영국", zoom:7,
+        assocName:"English UK", assocUrl:"https://www.englishuk.com/",
+        visaUrl:"https://www.gov.uk/visa-to-study-english" },
+  ie: { ko:"아일랜드", zoom:9,
+        assocName:"ACELS (아일랜드 정부 인증)", assocUrl:"https://www.acels.ie/",
+        visaUrl:"https://www.irishimmigration.ie/" },
+  mt: { ko:"몰타", zoom:13,
+        assocName:"FELTOM", assocUrl:"https://feltom.com/",
+        visaUrl:"https://identita.gov.mt/" },
+};
+const ctryOf = c => c.country || "uk";
+
+/* ═══════════ 상태 ═══════════ */
+let map, view = {t:"country"}, ctab = "uk", filter = "all", selCampus = null, layer = null;
+const $ = s => document.querySelector(s);
+const isMobile = () => window.innerWidth <= 860;
+const city = id => CITIES.find(c => c.id === id);
+const campus = id => CAMPUSES.find(c => c.id === id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+function campusesOf(cid){
+  return CAMPUSES.filter(c => c.city === cid && (filter === "all" || c.school === filter));
+}
+const resOf = campusId => (typeof RES !== "undefined" ? RES.filter(r => r.c === campusId) : []);
+const centerInfo = campusId => (typeof CENTER_INFO !== "undefined" ? CENTER_INFO[campusId] : null) || null;
+/* 로고 이미지 없이 브랜드 컬러 약칭 배지로 표시 */
+const brandLogo = k => null;
+const badgeHTML = (k, size) => {
+  const s = SCHOOLS[k], lg = brandLogo(k);
+  const st = size ? `width:${size}px;height:${size}px;` : "";
+  return lg
+    ? `<div class="badge logo" style="${st}border:1.5px solid ${s.col}"><img src="${lg}" alt="${s.abbr}"></div>`
+    : `<div class="badge" style="${st}background:${s.col}">${s.abbr}</div>`;
+};
+
+/* 도시 중심 좌표 기준, 캠퍼스를 작은 원형으로 분산 배치 (도시 단위 좌표라 겹침 방지) */
+function spread(cityObj, idx, total){
+  if(total === 1) return [cityObj.lat, cityObj.lng];
+  const r = 0.011, a = (2 * Math.PI * idx) / total - Math.PI / 2;
+  return [cityObj.lat + r * Math.sin(a) * 0.62, cityObj.lng + r * Math.cos(a)];
+}
+
+/* ═══════════ 지도 ═══════════ */
+function initMap(){
+  map = L.map("map", { zoomControl:false, attributionControl:true });
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    maxZoom:18
+  }).addTo(map);
+  if(!isMobile()) L.control.zoom({position:"bottomleft"}).addTo(map);
+  map.setView([53.8, -2.4], 6);
+  layer = L.layerGroup().addTo(map);
+}
+
+function clearMk(){ layer.clearLayers(); }
+
+function mkIcon(html){ return L.divIcon({ className:"", html, iconSize:null }); }
+
+function fitTo(coords, maxZoom){
+  if(!coords.length) return;
+  const pad = isMobile()
+    ? { paddingTopLeft:[36,70], paddingBottomRight:[36, Math.round(window.innerHeight*0.5)] }
+    : { paddingTopLeft:[430,70], paddingBottomRight:[70,70] };
+  if(coords.length === 1){ map.flyTo(coords[0], maxZoom, {duration:.7}); return; }
+  map.flyToBounds(L.latLngBounds(coords), { ...pad, maxZoom, duration:.7 });
+}
+
+function render(){
+  clearMk();
+  if(view.t === "country"){
+    const coords = [];
+    CITIES.forEach(c => {
+      if(ctryOf(c) !== ctab) return;
+      const n = campusesOf(c.id).length;
+      if(!n) return;
+      coords.push([c.lat, c.lng]);
+      const m = L.marker([c.lat, c.lng], {
+        icon: mkIcon(`<div class="pin city-pin"><div class="bub"><span class="cnt">${n}</span><span class="nm">${esc(cityName(c))}</span></div><div class="tail"></div></div>`),
+        title: `${cityName(c)} (${c.en})`
+      });
+      m.on("click", () => goCity(c.id));
+      layer.addLayer(m);
+    });
+    fitTo(coords, CTRY[ctab].zoom);
+  } else {
+    const ct = city(view.city);
+    const cs = campusesOf(view.city);
+    const coords = [];
+    let selPos = null;
+    cs.forEach((c, i) => {
+      const s = SCHOOLS[c.school];
+      const ci = centerInfo(c.id);
+      const pos = ci ? [ci.lat, ci.lng] : spread(ct, i, cs.length);
+      coords.push(pos);
+      if(c.id === selCampus) selPos = pos;
+      const lg = brandLogo(c.school);
+      const body = lg ? `<img src="${lg}" alt="${s.abbr}">` : `<span style="color:${s.col}">${s.abbr}</span>`;
+      const m = L.marker(pos, {
+        icon: mkIcon(`<div class="pin dot ${selCampus===c.id?'sel':''}"><div class="body" style="border-color:${s.col}">${body}</div><div class="dlbl" style="color:${s.col}">${esc(s.abbr)}</div></div>`),
+        title: c.name, zIndexOffset: 200
+      });
+      m.on("click", () => goCampus(c.id));
+      layer.addLayer(m);
+    });
+    /* 선택된 캠퍼스의 기숙사 마커 */
+    if(selCampus){
+      const sc = campus(selCampus), s = SCHOOLS[sc.school];
+      const rs = resOf(selCampus);
+      const resCoords = [];
+      rs.forEach((r, i) => {
+        if(!r.lat) return;
+        resCoords.push([r.lat, r.lng]);
+        const m = L.marker([r.lat, r.lng], {
+          icon: mkIcon(`<div class="pin dot res"><div class="body" style="border-color:${s.col}"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0F2B46"><path d="M12 3 2 12h3v8h6v-5h2v5h6v-8h3z"/></svg></div></div>`),
+          title: r.n, zIndexOffset: 100
+        });
+        m.on("click", () => {
+          const t = document.getElementById("r-" + i);
+          if(t){ t.scrollIntoView({behavior:"smooth", block:"center"});
+                 t.style.background = "#f0f7ff"; setTimeout(() => t.style.background = "", 1400); }
+        });
+        layer.addLayer(m);
+      });
+      if(selPos) fitTo([selPos, ...resCoords], 15);
+      else fitTo(coords, 13);
+    } else {
+      fitTo(coords, 13);
+    }
+  }
+}
+function goRes(i){
+  const r = resOf(selCampus)[i];
+  if(!r || !r.lat) return;
+  if(isMobile()){ const p = $("#panel"); p.classList.remove("full"); p.classList.add("open"); }
+  map.flyTo([r.lat, r.lng], Math.max(map.getZoom(), 16), {duration:.6});
+}
+
+/* ═══════════ 내비게이션 ═══════════ */
+function goCountry(){ view = {t:"country"}; selCampus = null; render(); paint(); sheet(false); }
+function goCity(id){ view = {t:"city", city:id}; selCampus = null; render(); paint(); sheet(true); }
+function goCampus(id){
+  const c = campus(id);
+  view = {t:"campus", city:c.city, campus:id}; selCampus = id;
+  render(); paint(); sheet(true);
+  $("#pbody").scrollTop = 0;
+}
+function goHome(){ $("#intro").classList.add("show"); }
+function selectCountry(c){ ctab = c; $("#intro").classList.remove("show"); goCountry(); setTimeout(() => map.invalidateSize(), 60); }
+function setTab(c){ ctab = c; if(view.t === "city" || view.t === "campus") view = {t:"country"}; goCountry(); }
+
+/* ═══════════ 패널 ═══════════ */
+function paint(){
+  const B = $("#pbody"), T = $("#ptitle"), C = $("#pcount"), K = $("#back");
+  if(view.t === "country"){
+    K.classList.remove("show");
+    T.textContent = t("countryAll")(ctryName(ctab));
+    const list = CITIES.filter(c => ctryOf(c) === ctab && campusesOf(c.id).length);
+    C.textContent = t("countLine")(list.length, list.reduce((s,c) => s + campusesOf(c.id).length, 0));
+    const listHTML = list.map(c => {
+      const cs = campusesOf(c.id);
+      const brands = [...new Set(cs.map(x => x.school))];
+      const nm = cityName(c);
+      return `<div class="row" role="button" tabindex="0" onclick="goCity('${c.id}')">
+        <div class="badge" style="background:${brands.length > 1 ? 'var(--navy)' : SCHOOLS[brands[0]].col}">${cs.length}</div>
+        <div class="rmain"><div class="rt">${esc(nm)}${nm !== c.en ? ` <span>${esc(c.en)}</span>` : ""}</div>
+        <div class="rs">${esc(cityTr(c,"feat"))}</div></div><div class="chev">›</div></div>`;
+    }).join("") || `<div class="empty">${t("noBrandCampus")}</div>`;
+    B.innerHTML = `<div class="ctabs">${Object.keys(CTRY).map(k =>
+      `<button class="${ctab===k?'on':''}" onclick="setTab('${k}')">${ctryName(k)}</button>`).join("")}</div>` + listHTML;
+    if(list.length){
+      B.innerHTML += `<div class="sec" style="border-bottom:none;padding-bottom:4px">
+        <p class="st">${t("recTitle")}</p>
+        <a class="link-row" href="${CTRY[ctab].assocUrl}" target="_blank" rel="noopener">
+          <div><div class="lt">${esc(CTRY[ctab].assocName)}</div><div class="ls">${t("assocSub")}</div></div><div class="la">${t("view")}</div></a>
+        <a class="link-row" href="${CTRY[ctab].visaUrl}" target="_blank" rel="noopener">
+          <div><div class="lt">${esc(t("visaTitle")(ctryName(ctab)))}</div><div class="ls">${t("visaSub")}</div></div><div class="la">${t("view")}</div></a>
+      </div>`;
+    }
+  }
+  else if(view.t === "city"){
+    K.classList.add("show");
+    const c = city(view.city), cs = campusesOf(view.city);
+    const nm = cityName(c);
+    T.textContent = nm !== c.en ? `${nm} ${c.en}` : c.en;
+    C.textContent = t("campusCount")(cs.length);
+    B.innerHTML = `<div class="sec">
+      ${CITY_IMG[c.id] ? `<div class="cityimg" style="background-image:url('${CITY_IMG[c.id]}')"></div>` : ""}
+      <p class="desc">${esc(cityTr(c,"intro"))}</p>
+      <div class="tags">${cityTr(c,"tags").map(x => `<span class="tag">${esc(x)}</span>`).join("")}</div></div>
+      <div class="sec" style="border-bottom:none"><p class="st">${t("citySchools")}</p>
+      ${cs.map(x => {
+        return `<div class="row" style="margin:0 -16px;padding-left:16px;padding-right:16px" role="button" tabindex="0" onclick="goCampus('${x.id}')">
+          ${badgeHTML(x.school)}
+          <div class="rmain"><div class="rt">${esc(x.name)}</div>
+          <div class="rs">${esc(schoolTr(x.school,"tag"))}</div></div>
+          <div class="chev">›</div></div>`;
+      }).join("")}</div>`;
+  }
+  else {
+    K.classList.add("show");
+    const c = campus(view.campus), s = SCHOOLS[c.school], ct = city(c.city);
+    const ci = centerInfo(c.id), rs = resOf(c.id);
+    T.textContent = c.name;
+    C.textContent = ct.ko;
+    B.innerHTML = `<div class="sec">
+      <div class="hd">${badgeHTML(c.school, 44)}
+      <div><h2>${esc(c.name)}</h2><p>${esc(s.name)} · ${esc(cityName(ct))}</p></div></div>
+      <p class="desc">${esc(t("campusDesc")(schoolTr(c.school,"tag"), cityName(ct), cityTr(ct,"feat")))}</p>
+      <div class="hi" style="margin-top:12px"><b>${t("consultPoint")}</b>${esc(pointTr(c))}</div>
+      </div>
+      ${ci && ci.addr ? `<div class="sec"><p class="st">${t("location")}</p>
+      <div class="kv"><dt>${t("addr")}</dt><dd>${esc(ci.addr)}</dd></div></div>` : ""}
+      <div class="sec"><p class="st">${t("brandFeats")}</p>
+      <div class="tags" style="margin-top:0">${schoolTr(c.school,"feats").map(f => `<span class="tag">${esc(f)}</span>`).join("")}</div></div>
+      <div class="sec"><p class="st">${t("resTitle")}${rs.length ? ` (${rs.length})` : ""}</p>
+      ${rs.length ? rs.map((r, i) => {
+        const d = [resTr(r.t), resTr(r.r), resTr(r.cm)].filter(Boolean).join(" · ");
+        const loc = !!r.lat;
+        return `<div id="r-${i}" class="row" style="margin:0 -16px;padding-left:16px;padding-right:16px;${loc ? "" : "cursor:default;"}transition:background .3s"${loc ? ` role="button" tabindex="0" onclick="goRes(${i})" title="${t("resMapTitle")}"` : ""}>
+          <div class="badge" style="background:#fff;border:2px solid ${s.col};color:${s.col};font-size:15px">⌂</div>
+          <div class="rmain"><div class="rt" style="font-size:13.5px">${esc(r.n)}</div>
+          <div class="rs" style="white-space:normal">${esc(d)}</div></div>${loc ? '<div class="chev">›</div>' : ""}</div>`;
+      }).join("") : `<div class="empty" style="padding:18px 0">${t("resNone")}</div>`}
+      </div>
+      <div class="sec" style="border-bottom:none">
+      <a class="link-row" href="${SCHOOL_SITE(c)}" target="_blank" rel="noopener">
+        <div><div class="lt">${t("schoolDetail")}</div><div class="ls">${t("schoolDetailSub")}</div></div><div class="la">${t("go")}</div></a>
+      ${ci && ci.addr ? `<div class="cta">
+        <a class="p" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ci.addr)}" target="_blank" rel="noopener">${t("mapCta")}</a>
+      </div>` : ``}</div>`;
+  }
+}
+
+/* ═══════════ 필터 · 범례 · 인트로 ═══════════ */
+(function initFilters(){
+  const F = $("#filters");
+  const all = document.createElement("button");
+  all.className = "fc on"; all.id = "f-all"; all.textContent = t("filterAll");
+  F.appendChild(all);
+  Object.entries(SCHOOLS).forEach(([k, s]) => {
+    const b = document.createElement("button");
+    b.className = "fc"; b.id = "f-" + k; b.textContent = s.abbr;
+    b.style.setProperty("--c", s.col);
+    F.appendChild(b);
+  });
+  ["all", ...Object.keys(SCHOOLS)].forEach(k => {
+    $("#f-" + k).onclick = () => {
+      filter = k;
+      ["all", ...Object.keys(SCHOOLS)].forEach(x => $("#f-" + x).classList.toggle("on", x === k));
+      if(view.t === "campus") view = {t:"city", city:view.city};
+      if(view.t === "city" && !campusesOf(view.city).length) view = {t:"country"};
+      selCampus = null; render(); paint();
+    };
+  });
+})();
+function paintLegend(){
+  $("#legend").innerHTML = Object.values(SCHOOLS).map(s =>
+    `<div class="lg"><i style="background:${s.col}"></i>${esc(s.name.split(" (")[0])}</div>`).join("") +
+    `<div class="lg"><i class="r"></i>${t("legendRes")}</div>`;
+}
+function paintIntro(){
+  Object.keys(CTRY).forEach(k => {
+    const cs = CAMPUSES.filter(c => ctryOf(city(c.city)) === k);
+    const cities = new Set(cs.map(c => c.city));
+    const brands = new Set(cs.map(c => c.school));
+    $("#stat-" + k).textContent = t("introStat")(cities.size, brands.size, cs.length);
+    const cn = $("#cn-" + k); if(cn) cn.textContent = ctryName(k);
+  });
+}
+
+/* ═══════════ 언어 전환 ═══════════ */
+function paintLangs(){
+  const mk = (labels) => labels.map(([k, n]) =>
+    `<button class="${lang===k?'on':''}" onclick="setLang('${k}')">${n}</button>`).join("");
+  $("#langs-intro").innerHTML = mk([["ko","한국어"],["en","English"],["zh","繁體中文"]]);
+  $("#langs-head").innerHTML = mk([["ko","KO"],["en","EN"],["zh","中文"]]);
+}
+function applyStatic(){
+  document.title = t("docTitle");
+  document.documentElement.lang = {ko:"ko", en:"en", zh:"zh-Hant"}[lang];
+  $("#hsub").textContent = t("headerSub");
+  $("#ih1").innerHTML = t("introH1");
+  $("#isub").innerHTML = t("introSub");
+  document.querySelectorAll(".cc-go").forEach(e => e.textContent = t("openMap"));
+  $("#back").setAttribute("aria-label", t("backAria"));
+  $("#home").title = t("homeAria"); $("#home").setAttribute("aria-label", t("homeAria"));
+  $("#f-all").textContent = t("filterAll");
+}
+function setLang(l){
+  if(!UI[l]) return;
+  lang = l; localStorage.setItem("esl-map-lang", l);
+  paintLangs(); applyStatic(); paintLegend(); paintIntro();
+  render(); paint();
+}
+
+/* ═══════════ 모바일 시트 ═══════════ */
+function sheet(open){ if(!isMobile()) return; const p = $("#panel");
+  p.classList.remove("full"); p.classList.toggle("open", open); }
+$("#grab").onclick = () => { const p = $("#panel");
+  if(p.classList.contains("full")) p.classList.remove("full");
+  else if(p.classList.contains("open")) p.classList.add("full");
+  else p.classList.add("open"); };
+let sy = 0;
+$("#grab").addEventListener("touchstart", e => { sy = e.touches[0].clientY; }, {passive:true});
+$("#grab").addEventListener("touchend", e => {
+  const dy = e.changedTouches[0].clientY - sy;
+  if(Math.abs(dy) > 30){ const p = $("#panel");
+    if(dy < 0){ p.classList.contains("open") ? p.classList.add("full") : p.classList.add("open"); }
+    else { p.classList.contains("full") ? p.classList.remove("full") : p.classList.remove("open"); } }
+}, {passive:true});
+
+$("#back").onclick = () => view.t === "campus" ? goCity(view.city) : goCountry();
+$("#home").onclick = goHome;
+window.goCity = goCity; window.goCampus = goCampus; window.goHome = goHome;
+window.selectCountry = selectCountry; window.setTab = setTab; window.goRes = goRes;
+window.setLang = setLang;
+
+/* ═══════════ 시작 ═══════════ */
+initMap();
+paintLangs(); applyStatic(); paintLegend(); paintIntro();
+paint(); sheet(false);
+window.addEventListener("resize", () => map.invalidateSize());
+</script>
+</body>
+</html>
