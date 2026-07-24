@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>ESL Study Map — 영국 · 아일랜드 · 몰타 어학연수 지도</title>
-<meta name="description" content="영국·아일랜드·몰타 어학연수 학교·기숙사 지도. 도시와 어학원을 지도에서 비교하고 학교 공식 홈페이지로 바로 이동하세요. 특정 유학원과 무관한 무료 정보 지도입니다.">
+<title>ESL Study Map — 영국 · 아일랜드 · 몰타 · 캐나다 · 호주 · 뉴질랜드 어학연수 지도</title>
+<meta name="description" content="영국·아일랜드·몰타·캐나다·호주·뉴질랜드 어학연수 학교·기숙사 지도. 도시와 어학원을 지도에서 비교하고 학교 공식 홈페이지로 바로 이동하세요. 특정 유학원과 무관한 무료 정보 지도입니다.">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -71,13 +71,17 @@ header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgb
 .intro-brand{height:24px;filter:brightness(0) invert(1);opacity:.92;margin-bottom:28px}
 #intro h1{font-size:clamp(26px,6vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.25;margin-bottom:10px}
 #intro .sub{font-size:14.5px;color:#9aa4af;line-height:1.65;margin-bottom:30px;font-weight:400}
+.cc-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
 .cc{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.13);border-radius:18px;
-  overflow:hidden;cursor:pointer;transition:all .22s ease;text-align:left;margin-bottom:14px}
+  overflow:hidden;cursor:pointer;transition:all .22s ease;text-align:left}
 .cc:hover{background:rgba(255,255,255,.1);border-color:rgba(0,113,227,.6);transform:translateY(-2px)}
 .cc-img{height:104px;position:relative;background-size:cover;background-position:center}
 .cc-uk{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#00247D,#1a3a6b 45%,#8b1a2b)}
 .cc-ie{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#0f7a45,#0a5c34 55%,#c97a12)}
 .cc-mt{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#b31e2e,#8f1624 55%,#5a6b78)}
+.cc-ca{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#c8102e,#8f1624 55%,#3a4a58)}
+.cc-au{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#0b3d6b,#0a2a4a 55%,#c9a012)}
+.cc-nz{background-image:linear-gradient(rgba(5,15,30,.10),rgba(5,15,30,.34)),linear-gradient(120deg,#0f2b46,#0a1c30 55%,#2e7d64)}
 .cc-flag{position:absolute;right:18px;bottom:8px;font-size:38px;opacity:.92;text-shadow:0 2px 8px rgba(0,0,0,.4)}
 .cc-img .cc-cap{position:absolute;left:18px;bottom:12px;font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.75);font-weight:700;text-transform:uppercase}
 .cc-main{display:flex;align-items:center;justify-content:space-between;padding:15px 18px}
@@ -85,6 +89,17 @@ header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgb
 .cc-name span{font-size:11.5px;color:#8b95a1;font-weight:600;margin-left:8px;letter-spacing:.08em}
 .cc-stat{font-size:12.5px;color:#9aa4af;font-weight:500}
 .cc-go{color:var(--blue);font-size:13px;font-weight:800;white-space:nowrap}
+@media(min-width:861px){
+  .intro-in{width:min(940px,94vw)}
+  .cc-grid{grid-template-columns:repeat(3,1fr)}
+  .cc-img{height:96px}
+  .cc-main{padding:13px 15px}
+  .cc-name{font-size:16px}
+  .cc-name span{font-size:10.5px;margin-left:6px}
+  .cc-stat{font-size:11.5px}
+  .cc-go{font-size:12px}
+  .cc-flag{font-size:32px;right:14px}
+}
 .quick{display:flex;gap:8px;justify-content:center;margin-top:22px;flex-wrap:wrap}
 .quick a{font-size:12px;color:#9aa4af;text-decoration:none;border:1px solid rgba(255,255,255,.16);
   border-radius:980px;padding:7px 14px;transition:all .18s ease;font-weight:600}
@@ -161,8 +176,8 @@ header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgb
 .link-row .ls{font-size:11.5px;color:var(--mut);margin-top:1px}
 .link-row .la{color:var(--blue);font-size:12px;font-weight:800;white-space:nowrap}
 .empty{padding:34px 0;text-align:center;font-size:13px;color:var(--mut)}
-.ctabs{display:flex;gap:6px;padding:12px 0 8px}
-.ctabs button{flex:1;border:1px solid var(--line);background:#fff;color:var(--body);font-size:12.5px;
+.ctabs{display:flex;flex-wrap:wrap;gap:6px;padding:12px 0 8px}
+.ctabs button{flex:1 1 30%;border:1px solid var(--line);background:#fff;color:var(--body);font-size:12.5px;
   font-weight:700;padding:8px 0;border-radius:10px;cursor:pointer;transition:all .18s ease}
 .ctabs button.on{background:var(--blue);border-color:var(--blue);color:#fff}
 a:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -197,6 +212,7 @@ a:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--
     <div><div class="langs" id="langs-intro"></div></div>
     <h1 id="ih1">어학연수,<br>지도에서 시작하세요.</h1>
     <p class="sub" id="isub">국가와 도시를 고르고, 어학원을 비교하고, 공식 홈페이지까지 바로.<br>특정 유학원과 무관한 무료 어학연수 지도입니다.</p>
+    <div class="cc-grid">
     <div class="cc" onclick="selectCountry('uk')">
       <div class="cc-img cc-uk"><span class="cc-cap">United Kingdom</span><span class="cc-flag">🇬🇧</span></div>
       <div class="cc-main">
@@ -226,6 +242,37 @@ a:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--
         </div>
         <div class="cc-go">지도 열기 ›</div>
       </div>
+    </div>
+    <div class="cc" onclick="selectCountry('ca')">
+      <div class="cc-img cc-ca"><span class="cc-cap">Canada</span><span class="cc-flag">🇨🇦</span></div>
+      <div class="cc-main">
+        <div>
+          <div class="cc-name"><b id="cn-ca" style="font-weight:inherit">캐나다</b><span>CANADA</span></div>
+          <div class="cc-stat" id="stat-ca"></div>
+        </div>
+        <div class="cc-go">지도 열기 ›</div>
+      </div>
+    </div>
+    <div class="cc" onclick="selectCountry('au')">
+      <div class="cc-img cc-au"><span class="cc-cap">Australia</span><span class="cc-flag">🇦🇺</span></div>
+      <div class="cc-main">
+        <div>
+          <div class="cc-name"><b id="cn-au" style="font-weight:inherit">호주</b><span>AUSTRALIA</span></div>
+          <div class="cc-stat" id="stat-au"></div>
+        </div>
+        <div class="cc-go">지도 열기 ›</div>
+      </div>
+    </div>
+    <div class="cc" onclick="selectCountry('nz')">
+      <div class="cc-img cc-nz"><span class="cc-cap">New Zealand</span><span class="cc-flag">🇳🇿</span></div>
+      <div class="cc-main">
+        <div>
+          <div class="cc-name"><b id="cn-nz" style="font-weight:inherit">뉴질랜드</b><span>NEW ZEALAND</span></div>
+          <div class="cc-stat" id="stat-nz"></div>
+        </div>
+        <div class="cc-go">지도 열기 ›</div>
+      </div>
+    </div>
     </div>
   </div>
   <div class="intro-foot">ⓒ ESL Study Map — 정보 제공 목적의 무료 페이지입니다. 학비·과정은 각 학교 공식 사이트 기준이 우선합니다.</div>
@@ -262,42 +309,64 @@ const SCHOOLS = {
   kaplan:    { site:"https://www.kaplaninternational.com/", name:"Kaplan International Languages", ko:"카플란", col:"#0B63CE", abbr:"KAP",
                tag:"글로벌 대표 어학 교육기관",
                feats:["K+ 자체 학습 시스템","시험 대비 · 대학 진학 과정 강점","검증된 글로벌 만족도"] },
-  ec:    { site:"https://www.ecenglish.com/", name:"EC English Language Centres", ko:"이씨 잉글리시", col:"#EF6C00", abbr:"EC",
+  ec:        { site:"https://www.ecenglish.com/", name:"EC English Language Centres", ko:"이씨 잉글리시", col:"#EF6C00", abbr:"EC",
                tag:"다국적 환경의 프리미엄 어학원",
                feats:["다국적 학생 비율 관리","맞춤형 학습 성과 보장제","문화 경험 중심 액티비티"] },
-  bayswater:    { site:"https://www.bayswater.ac/", name:"Bayswater College", ko:"베이스워터", col:"#00897B", abbr:"BAY",
+  bayswater: { site:"https://www.bayswater.ac/", name:"Bayswater College", ko:"베이스워터", col:"#00897B", abbr:"BAY",
                tag:"합리적 비용의 실속형 어학원",
                feats:["검증된 학생 만족도","3단계 학생 케어 시스템","자격 보유 전문 강사진"] },
-  ces:    { site:"https://www.ces-schools.com/", name:"CES (Centre of English Studies)", ko:"씨이에스", col:"#C2185B", abbr:"CES",
+  ces:       { site:"https://www.ces-schools.com/", name:"CES (Centre of English Studies)", ko:"씨이에스", col:"#C2185B", abbr:"CES",
                tag:"가족적인 분위기의 소규모 명문",
                feats:["소규모 클래스 집중 관리","낮은 한인 비율","가족적인 학교 분위기"] },
-  ep:    { site:"https://www.englishpath.com/", name:"English Path", ko:"잉글리시 패스", col:"#5C6BC0", abbr:"EP",
+  ep:        { site:"https://www.englishpath.com/", name:"English Path", ko:"잉글리시 패스", col:"#5C6BC0", abbr:"EP",
                tag:"진학 · 커리어 연계 특화",
                feats:["추천율 95% 이상","대학 캠퍼스 연계 시설","진학 & 커리어 프로그램"] },
-  eci:    { site:"https://www.eci.ie/", name:"Emerald Cultural Institute", ko:"에메랄드", col:"#2E7D32", abbr:"ECI",
+  eci:       { site:"https://www.eci.ie/", name:"Emerald Cultural Institute", ko:"에메랄드", col:"#2E7D32", abbr:"ECI",
                tag:"아일랜드 대표 전통 명문",
                feats:["오랜 전통의 사립 명문","고풍스러운 캠퍼스","체계적인 커리큘럼"] },
-  atlas:    { site:"https://atlaslanguageschool.com/", name:"Atlas Language School", ko:"아틀라스", col:"#E8A013", abbr:"ATL",
+  atlas:     { site:"https://atlaslanguageschool.com/", name:"Atlas Language School", ko:"아틀라스", col:"#E8A013", abbr:"ATL",
                tag:"더블린 · 몰타의 인기 사립 어학원",
                feats:["체계적인 학생 케어","활발한 액티비티","합리적인 장기 과정"] },
-  iels:    { site:"https://www.ielsmalta.com/", name:"IELS Malta", ko:"아이이엘에스", col:"#BF1E2E", abbr:"IELS",
+  iels:      { site:"https://www.ielsmalta.com/", name:"IELS Malta", ko:"아이이엘에스", col:"#BF1E2E", abbr:"IELS",
                tag:"몰타 대표 로컬 명문",
                feats:["몰타 최대 규모급 역사","슬리에마 중심 위치","다양한 레벨 · 과정"] },
-  cea:    { site:"https://corkenglishacademy.com/", name:"Cork English Academy", ko:"코크 잉글리시", col:"#7B2FBE", abbr:"CEA",
+  cea:       { site:"https://corkenglishacademy.com/", name:"Cork English Academy", ko:"코크 잉글리시", col:"#7B2FBE", abbr:"CEA",
                tag:"코크의 실속형 어학원",
                feats:["소도시의 합리적 물가","소규모 수업","친근한 분위기"] },
-  ih:    { site:"https://www.ihlondon.com/", name:"IH London (International House)", ko:"아이에이치 런던", col:"#3B44B5", abbr:"IH",
+  ih:        { site:"https://www.ihlondon.com/", name:"IH London (International House)", ko:"아이에이치 런던", col:"#3B44B5", abbr:"IH",
                tag:"70년 전통 · CELTA 발상지",
                feats:["IH World 네트워크 창립 기관","런던 상위 1% 평가 어학원","원어민 교류 언어 교환 프로그램"] },
-  lsi:    { site:"https://www.lsi.edu/", name:"LSI (Language Studies International)", ko:"엘에스아이", col:"#D9483B", abbr:"LSI",
+  lsi:       { site:"https://www.lsi.edu/", name:"LSI (Language Studies International)", ko:"엘에스아이", col:"#D9483B", abbr:"LSI",
                tag:"실속 있는 소규모 어학원",
                feats:["1회 수업 50분으로 긴 편","자체 관리 홈스테이·기숙사","합리적인 학비"] },
-  stgiles:    { site:"https://www.stgiles-international.com/", name:"St Giles International", ko:"세인트 자일스", col:"#E8A013", abbr:"STG",
+  stgiles:   { site:"https://www.stgiles-international.com/", name:"St Giles International", ko:"세인트 자일스", col:"#E8A013", abbr:"STG",
                tag:"3대째 가족경영 70년 명문",
                feats:["한 반 최대 12명 · 평균 10명","호스트 직접 계약 홈스테이","워킹홀리데이 학생 지원"] },
-  ilsc:    { site:"https://www.ilsc.com/", name:"ILSC Language Schools", ko:"아이엘에스씨", col:"#00838F", abbr:"ILSC",
+  ilsc:      { site:"https://www.ilsc.com/", name:"ILSC Language Schools", ko:"아이엘에스씨", col:"#00838F", abbr:"ILSC",
                tag:"유연한 세션제 커리큘럼",
                feats:["4주 세션제 · 매주 월요일 등록","Study & Work 프로그램","Job Club 취업 지원"] },
+  /* ── 2026-07 추가: 캐나다 · 호주 · 뉴질랜드 ── */
+  ilac:      { site:"https://www.ilac.com/", name:"ILAC (International Language Academy of Canada)", ko:"아일락", col:"#E31837", abbr:"ILAC",
+               tag:"캐나다 대표 대형 어학원",
+               feats:["17단계 세분화 레벨","다수의 어학원 어워드 수상","넓은 대학 진학 파트너십"] },
+  gv:        { site:"https://gvenglish.com/", name:"Global Village English Centres", ko:"글로벌 빌리지", col:"#2F9E44", abbr:"GV",
+               tag:"캘거리 · 빅토리아 로컬 명문",
+               feats:["낮은 한인 비율","오랜 운영 전통","지역 밀착형 학생 케어"] },
+  greenwich: { site:"https://www.greenwichcollege.edu.au/", name:"Greenwich College", ko:"그리니치", col:"#1D3557", abbr:"GWC",
+               tag:"호주 전역 6개 캠퍼스 인기 어학원",
+               feats:["세분화된 선택 과정","호주 주요 도시 전역 캠퍼스","활발한 액티비티"] },
+  navitas:   { site:"https://www.navitasenglish.edu.au/", name:"Navitas English", ko:"나비타스", col:"#00A9CE", abbr:"NAV",
+               tag:"호주의 오랜 전통 어학원",
+               feats:["오랜 운영 역사","체계적인 커리큘럼","진학 연계 과정"] },
+  impact:    { site:"https://www.impactenglish.edu.au/", name:"Impact English College", ko:"임팩트", col:"#C62828", abbr:"IMP",
+               tag:"English Only 몰입 교육 특화",
+               feats:["엄격한 English Only 정책","높은 학생 만족도","바리스타 등 특화 과정"] },
+  als:       { site:"https://alscollege.com.au/", name:"ALS College", ko:"에이엘에스", col:"#00695C", abbr:"ALS",
+               tag:"브리즈번의 시험 대비 명문",
+               feats:["케임브리지 시험 과정 강점","구 IH 브리즈번","집중 관리형 수업"] },
+  nzlc:      { site:"https://www.nzlc.ac.nz/", name:"NZLC (New Zealand Language Centres)", ko:"엔젯엘씨", col:"#1565C0", abbr:"NZLC",
+               tag:"뉴질랜드 대표 어학원",
+               feats:["다양한 과정 운영","체계적인 학생 케어","오클랜드 중심 위치"] },
 };
 
 const CITIES = [
@@ -379,6 +448,57 @@ const CITIES = [
     feat:"조용한 주거지역의 몰입 환경",
     intro:"세인트줄리안스 북쪽의 조용한 주거지역입니다. 번화가와 가까우면서도 차분한 환경이라, 공부에 집중하면서 필요할 때만 시내로 나가는 생활이 가능합니다.",
     tags:["조용한 주거지역","공부 집중","번화가 인접","합리적 환경"] },
+  /* ── 캐나다 ── */
+  { country:"ca", id:"toronto", ko:"토론토", en:"Toronto", lat:43.6532, lng:-79.3832,
+    feat:"다문화가 공존하는 캐나다 최대 도시",
+    intro:"캐나다 경제·문화의 중심이자 세계에서 손꼽히는 다문화 도시입니다. 어학원 선택폭이 캐나다에서 가장 넓고, 진학·커리어 연계 기회도 가장 많은 동부 연수의 중심입니다.",
+    tags:["캐나다 최대 도시","다문화 환경","어학원 선택폭 최다","대도시 인프라"] },
+  { country:"ca", id:"vancouver", ko:"밴쿠버", en:"Vancouver", lat:49.2827, lng:-123.1207,
+    feat:"자연과 도시가 어우러진 서부 대표 도시",
+    intro:"바다와 산으로 둘러싸인 캐나다 서부의 대표 도시입니다. 캐나다에서 가장 온화한 기후와 아름다운 자연으로 꾸준히 인기가 많으며, 어학원 인프라도 잘 갖춰져 있습니다.",
+    tags:["온화한 기후","자연 친화","서부 최대 도시","높은 인기"] },
+  { country:"ca", id:"montreal", ko:"몬트리올", en:"Montreal", lat:45.5017, lng:-73.5673,
+    feat:"영어·프랑스어를 함께 쓰는 문화 수도",
+    intro:"북미 속 유럽으로 불리는 캐나다의 문화 수도입니다. 영어와 프랑스어를 동시에 접할 수 있는 독특한 환경이며, 토론토·밴쿠버보다 생활비가 합리적입니다.",
+    tags:["2개 언어 환경","유럽풍 문화","합리적 생활비","예술의 도시"] },
+  { country:"ca", id:"calgary", ko:"캘거리", en:"Calgary", lat:51.0447, lng:-114.0719,
+    feat:"로키의 관문 · 한인 비율 낮은 실속 도시",
+    intro:"캐나다 로키로 가는 관문 도시입니다. 대도시 대비 한인 비율이 낮아 영어 몰입 환경이 좋고, 생활비도 토론토·밴쿠버보다 합리적입니다.",
+    tags:["로키 관문","영어 몰입 환경","합리적 생활비","서부 대도시"] },
+  { country:"ca", id:"victoria", ko:"빅토리아", en:"Victoria", lat:48.4284, lng:-123.3656,
+    feat:"빈티지 감성의 안전한 섬 도시",
+    intro:"밴쿠버 섬에 위치한 브리티시컬럼비아의 주도입니다. 캐나다에서 가장 온화한 기후와 영국풍 거리로 유명하며, 조용하고 안전해 차분한 연수 생활이 가능합니다.",
+    tags:["온화한 기후","영국풍 소도시","안전한 환경","여유로운 생활"] },
+  /* ── 호주 ── */
+  { country:"au", id:"sydney", ko:"시드니", en:"Sydney", lat:-33.8688, lng:151.2093,
+    feat:"호주 연수의 중심 · 세계적 미항",
+    intro:"오페라하우스와 하버브리지의 도시이자 호주 어학연수의 중심입니다. 어학원 선택폭이 가장 넓고 아르바이트 기회도 많아 워킹홀리데이와 연계하기 좋습니다.",
+    tags:["호주 최대 도시","어학원 최다","워킹홀리데이 인기","해변과 도시"] },
+  { country:"au", id:"melbourne", ko:"멜버른", en:"Melbourne", lat:-37.8136, lng:144.9631,
+    feat:"커피와 예술의 도시 · 살기 좋은 도시",
+    intro:"세계에서 가장 살기 좋은 도시로 자주 꼽히는 호주의 문화 수도입니다. 카페 문화와 예술적 분위기 속에서 공부할 수 있으며, 교육 도시답게 면학 분위기도 좋습니다.",
+    tags:["문화·예술 수도","카페 문화","교육 도시","살기 좋은 도시"] },
+  { country:"au", id:"brisbane", ko:"브리즈번", en:"Brisbane", lat:-27.4698, lng:153.0251,
+    feat:"온화한 날씨의 실속형 대도시",
+    intro:"1년 내내 온화한 퀸즐랜드의 주도입니다. 시드니·멜버른보다 생활비가 합리적이고 골드코스트 등 휴양지가 가까워 실속과 여유를 모두 챙길 수 있습니다.",
+    tags:["온화한 기후","합리적 생활비","휴양지 인접","여유로운 분위기"] },
+  { country:"au", id:"goldcoast", ko:"골드코스트", en:"Gold Coast", lat:-28.0167, lng:153.4000,
+    feat:"서퍼의 천국 · 휴양지 연수",
+    intro:"긴 해변이 이어지는 호주 대표 휴양 도시입니다. 서핑 등 액티비티와 함께하는 연수 생활이 가능하며, 관광 도시라 서비스업 아르바이트 기회도 많습니다.",
+    tags:["해변 휴양지","서핑의 성지","아르바이트 기회","여유로운 생활"] },
+  { country:"au", id:"perth", ko:"퍼스", en:"Perth", lat:-31.9505, lng:115.8605,
+    feat:"여유로운 서호주의 중심 · 낮은 한인 비율",
+    intro:"호주 서해안의 중심 도시입니다. 동부 대도시보다 한적하고 한인 비율이 낮아 몰입 환경이 좋으며, 아름다운 해변과 여유로운 생활이 매력입니다.",
+    tags:["영어 몰입 환경","여유로운 분위기","아름다운 해변","서호주 중심"] },
+  { country:"au", id:"adelaide", ko:"애들레이드", en:"Adelaide", lat:-34.9285, lng:138.6007,
+    feat:"조용하고 계획적인 학생 친화 도시",
+    intro:"잘 계획된 도시 구조와 차분한 분위기의 남호주 주도입니다. 생활비가 호주 대도시 중 합리적인 편이고, 교통과 생활이 편리해 공부에 집중하기 좋습니다.",
+    tags:["차분한 분위기","합리적 생활비","계획 도시","학생 친화"] },
+  /* ── 뉴질랜드 ── */
+  { country:"nz", id:"auckland", ko:"오클랜드", en:"Auckland", lat:-36.8485, lng:174.7633,
+    feat:"뉴질랜드 최대 도시 · 연수의 중심",
+    intro:"뉴질랜드 인구의 3분의 1이 모여 있는 최대 도시이자 어학연수의 중심입니다. 도심과 바다가 가까워 자연과 도시 생활을 함께 누릴 수 있으며, 워킹홀리데이 연계에도 유리합니다.",
+    tags:["뉴질랜드 최대 도시","연수 중심지","자연과 도시","워킹홀리데이 연계"] },
 ];
 
 const CAMPUSES = [
@@ -481,6 +601,87 @@ const CAMPUSES = [
     point:"슬리에마 중심의 몰타 대표 로컬 명문. 오랜 역사와 규모를 갖췄습니다." },
   { id:"atlas-malta", school:"atlas", city:"pembroke", name:"Atlas Malta", edm:4366, price:"₩1,362,592",
     point:"조용한 펨브로크 주거지역. 차분한 환경에서 합리적 비용으로 공부할 수 있습니다." },
+  /* ── 캐나다 (2026-07 추가) ── */
+  { id:"kaplan-toronto", school:"kaplan", city:"toronto", name:"Kaplan Toronto", edm:657,
+    point:"토론토 중심가 캠퍼스. 글로벌 브랜드의 체계적인 시스템과 시험 대비 과정이 강점입니다." },
+  { id:"kaplan-vancouver", school:"kaplan", city:"vancouver", name:"Kaplan Vancouver", edm:658,
+    point:"밴쿠버 다운타운 위치. K+ 학습 시스템으로 단기 연수도 성과를 관리합니다." },
+  { id:"ec-toronto", school:"ec", city:"toronto", name:"EC Toronto", edm:979,
+    point:"토론토 다운타운의 현대적 캠퍼스. 다국적 학생 비율 관리가 잘 되어 있습니다." },
+  { id:"ec-vancouver", school:"ec", city:"vancouver", name:"EC Vancouver", edm:980,
+    point:"밴쿠버 중심가의 현대적 캠퍼스. 문화 경험 중심 액티비티가 활발합니다." },
+  { id:"bayswater-toronto", school:"bayswater", city:"toronto", name:"Bayswater Toronto", edm:981,
+    point:"토론토 중심가의 실속형 캠퍼스. 합리적인 학비가 장점입니다." },
+  { id:"bayswater-vancouver", school:"bayswater", city:"vancouver", name:"Bayswater Vancouver", edm:5047,
+    point:"밴쿠버의 실속형 선택지. 장기 등록 할인 혜택이 좋습니다." },
+  { id:"bayswater-calgary", school:"bayswater", city:"calgary", name:"Bayswater Calgary", edm:1486,
+    point:"캘거리 중심가 위치. 대도시 대비 합리적인 생활비로 공부할 수 있습니다." },
+  { id:"ces-toronto", school:"ces", city:"toronto", name:"CES Toronto", edm:716,
+    point:"소규모 클래스 집중 관리. 가족적인 분위기의 토론토 캠퍼스입니다." },
+  { id:"ces-vancouver", school:"ces", city:"vancouver", name:"CES Vancouver", edm:5056,
+    point:"CES의 밴쿠버 캠퍼스. 낮은 한인 비율과 소규모 수업이 강점입니다." },
+  { id:"ilsc-toronto", school:"ilsc", city:"toronto", name:"ILSC Toronto", edm:1068,
+    point:"4주 세션제 커리큘럼과 풍부한 선택 과목. 토론토 최대 규모급 캠퍼스입니다." },
+  { id:"ilsc-vancouver", school:"ilsc", city:"vancouver", name:"ILSC Vancouver", edm:1095,
+    point:"밴쿠버 다운타운의 대형 캠퍼스. 선택 과목이 다양해 장기 연수에 좋습니다." },
+  { id:"ilsc-montreal", school:"ilsc", city:"montreal", name:"ILSC Montreal", edm:1474,
+    point:"영어와 프랑스어를 모두 배울 수 있는 몬트리올 캠퍼스입니다." },
+  { id:"ilac-toronto", school:"ilac", city:"toronto", name:"ILAC Toronto", edm:721,
+    point:"캐나다 대표 대형 어학원. 17단계 세분화 레벨로 정확한 반 배정이 강점입니다." },
+  { id:"ilac-vancouver", school:"ilac", city:"vancouver", name:"ILAC Vancouver", edm:720,
+    point:"수상 경력이 많은 밴쿠버 인기 캠퍼스. 대학 진학 파트너십이 넓습니다." },
+  { id:"lsi-toronto", school:"lsi", city:"toronto", name:"LSI Toronto", edm:1072,
+    point:"1회 수업 50분의 소규모 캠퍼스. 합리적인 학비가 장점입니다." },
+  { id:"lsi-vancouver", school:"lsi", city:"vancouver", name:"LSI Vancouver", edm:1463,
+    point:"밴쿠버 중심가의 소규모 캠퍼스. 교사와의 접촉 시간이 많습니다." },
+  { id:"ep-toronto", school:"ep", city:"toronto", name:"English Path Toronto", edm:5259,
+    point:"진학·커리어 연계 프로그램이 강점인 토론토 캠퍼스입니다." },
+  { id:"gv-calgary", school:"gv", city:"calgary", name:"GV Calgary", edm:717,
+    point:"캘거리의 오랜 로컬 명문. 낮은 한인 비율의 몰입 환경입니다." },
+  { id:"gv-victoria", school:"gv", city:"victoria", name:"GV Victoria", edm:718,
+    point:"휴양 도시 빅토리아의 대표 어학원. 소도시의 안전하고 여유로운 환경입니다." },
+  /* ── 호주 (2026-07 추가) ── */
+  { id:"ilsc-sydney", school:"ilsc", city:"sydney", name:"ILSC Sydney", edm:2188,
+    point:"시드니 중심가의 대형 캠퍼스. 선택 과목과 국적 구성이 다양합니다." },
+  { id:"ilsc-brisbane", school:"ilsc", city:"brisbane", name:"ILSC Brisbane", edm:2034,
+    point:"브리즈번 중심 위치. 4주 세션제로 매주 월요일 입학이 가능합니다." },
+  { id:"ilsc-melbourne", school:"ilsc", city:"melbourne", name:"ILSC Melbourne", edm:2887,
+    point:"멜버른 중심가 캠퍼스. Study & Work 프로그램으로 워킹홀리데이 준비에 좋습니다." },
+  { id:"ilsc-adelaide", school:"ilsc", city:"adelaide", name:"ILSC Adelaide", edm:4715,
+    point:"애들레이드의 합리적 선택지. 소도시의 낮은 생활비가 장점입니다." },
+  { id:"ilsc-perth", school:"ilsc", city:"perth", name:"ILSC Perth", edm:5244,
+    point:"퍼스 중심가 캠퍼스. 서호주의 여유로운 환경에서 공부할 수 있습니다." },
+  { id:"greenwich-sydney", school:"greenwich", city:"sydney", name:"Greenwich Sydney", edm:572,
+    point:"시드니 대표 인기 어학원. 발음 교정 등 선택 과정이 세분화되어 있습니다." },
+  { id:"greenwich-melbourne", school:"greenwich", city:"melbourne", name:"Greenwich Melbourne", edm:5511,
+    point:"멜버른 중심가 캠퍼스. 세분화된 레벨과 선택 과목이 강점입니다." },
+  { id:"greenwich-brisbane", school:"greenwich", city:"brisbane", name:"Greenwich Brisbane", edm:5512,
+    point:"브리즈번 중심가 위치. 합리적인 학비로 인기가 많습니다." },
+  { id:"greenwich-goldcoast", school:"greenwich", city:"goldcoast", name:"Greenwich Gold Coast", edm:5513,
+    point:"휴양지 골드코스트 캠퍼스. 서핑과 함께하는 연수 생활이 가능합니다." },
+  { id:"greenwich-adelaide", school:"greenwich", city:"adelaide", name:"Greenwich Adelaide", edm:5629,
+    point:"애들레이드의 신규 캠퍼스. 차분한 도시에서 합리적으로 공부할 수 있습니다." },
+  { id:"greenwich-perth", school:"greenwich", city:"perth", name:"Greenwich Perth", edm:5627,
+    point:"퍼스의 신규 캠퍼스. 한인 비율이 낮은 몰입 환경입니다." },
+  { id:"lsi-brisbane", school:"lsi", city:"brisbane", name:"LSI Brisbane", edm:551,
+    point:"브리즈번의 소규모 캠퍼스. 1회 수업 50분과 합리적 학비가 장점입니다." },
+  { id:"navitas-sydney", school:"navitas", city:"sydney", name:"Navitas Sydney Hyde Park", edm:488,
+    point:"하이드파크 인근의 오랜 전통 어학원. 체계적인 커리큘럼이 강점입니다." },
+  { id:"navitas-perth", school:"navitas", city:"perth", name:"Navitas Perth", edm:492,
+    point:"퍼스의 전통 있는 캠퍼스. 진학 연계 과정이 잘 갖춰져 있습니다." },
+  { id:"impact-melbourne", school:"impact", city:"melbourne", name:"Impact Melbourne", edm:3041,
+    point:"엄격한 English Only 정책으로 유명한 몰입형 어학원입니다." },
+  { id:"impact-brisbane", school:"impact", city:"brisbane", name:"Impact Brisbane", edm:3042,
+    point:"브리즈번 중심가 위치. 영어 사용 규정이 엄격해 실력 향상이 빠릅니다." },
+  { id:"als-brisbane", school:"als", city:"brisbane", name:"ALS College Brisbane", edm:549,
+    point:"구 IH 브리즈번. 케임브리지 시험 대비 과정이 강한 브리즈번 명문입니다." },
+  { id:"ep-brisbane", school:"ep", city:"brisbane", name:"English Path Brisbane", edm:5640,
+    point:"브리즈번의 신규 캠퍼스. 시설 대비 합리적인 학비가 장점입니다." },
+  /* ── 뉴질랜드 (2026-07 추가) ── */
+  { id:"lsi-auckland", school:"lsi", city:"auckland", name:"LSI Auckland", edm:889,
+    point:"오클랜드 중심가의 소규모 캠퍼스. 차분한 분위기에서 집중할 수 있습니다." },
+  { id:"nzlc-auckland", school:"nzlc", city:"auckland", name:"NZLC Auckland", edm:2609,
+    point:"뉴질랜드 대표 어학원. 다양한 과정과 체계적인 학생 케어가 강점입니다." },
 ];
 
 /* ═══════════ 국가 ═══════════ */
@@ -494,6 +695,15 @@ const CTRY = {
   mt: { ko:"몰타", zoom:13,
         assocName:"FELTOM", assocUrl:"https://feltom.com/",
         visaUrl:"https://identita.gov.mt/" },
+  ca: { ko:"캐나다", zoom:6,
+        assocName:"Languages Canada", assocUrl:"https://www.languagescanada.ca/",
+        visaUrl:"https://www.canada.ca/en/immigration-refugees-citizenship/services/study-canada.html" },
+  au: { ko:"호주", zoom:5,
+        assocName:"English Australia", assocUrl:"https://www.englishaustralia.com.au/",
+        visaUrl:"https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/student-500" },
+  nz: { ko:"뉴질랜드", zoom:10,
+        assocName:"English New Zealand", assocUrl:"https://englishnewzealand.co.nz/",
+        visaUrl:"https://www.immigration.govt.nz/" },
 };
 const ctryOf = c => c.country || "uk";
 
@@ -509,8 +719,12 @@ function campusesOf(cid){
 }
 const resOf = campusId => (typeof RES !== "undefined" ? RES.filter(r => r.c === campusId) : []);
 const centerInfo = campusId => (typeof CENTER_INFO !== "undefined" ? CENTER_INFO[campusId] : null) || null;
-/* 로고 이미지 없이 브랜드 컬러 약칭 배지로 표시 */
-const brandLogo = k => null;
+const LOGO_FILE = { kaplan:"kaplan-90.webp", ec:"ec-90.webp", bayswater:"bayswater-90.webp",
+  ces:"ces-90.webp", ep:"e-path-90.webp", eci:"emerald-90.webp", atlas:"atlas-90.webp", iels:"iels-90.webp",
+  ih:"ih-90.webp", lsi:"lsi-90.webp", ilsc:"ilsc-90.webp", ilac:"ilac-90.webp",
+  greenwich:"greenwich-90.webp", navitas:"navitas-90.webp", impact:"impact-90.webp",
+  als:"als-90.webp", nzlc:"nzlc-90.webp", gv:"gv-90.png", stgiles:"stgiles-90.png" };
+const brandLogo = k => LOGO_FILE[k] ? "logos/" + LOGO_FILE[k] : null;
 const badgeHTML = (k, size) => {
   const s = SCHOOLS[k], lg = brandLogo(k);
   const st = size ? `width:${size}px;height:${size}px;` : "";
@@ -558,10 +772,10 @@ function render(){
     CITIES.forEach(c => {
       if(ctryOf(c) !== ctab) return;
       const n = campusesOf(c.id).length;
-      if(!n) return;
+      if(!n && !CTRY[ctab].cityOnly) return;
       coords.push([c.lat, c.lng]);
       const m = L.marker([c.lat, c.lng], {
-        icon: mkIcon(`<div class="pin city-pin"><div class="bub"><span class="cnt">${n}</span><span class="nm">${esc(cityName(c))}</span></div><div class="tail"></div></div>`),
+        icon: mkIcon(`<div class="pin city-pin"><div class="bub">${n ? `<span class="cnt">${n}</span>` : ""}<span class="nm" style="${n ? "" : "padding-left:6px"}">${esc(cityName(c))}</span></div><div class="tail"></div></div>`),
         title: `${cityName(c)} (${c.en})`
       });
       m.on("click", () => goCity(c.id));
@@ -640,14 +854,15 @@ function paint(){
   if(view.t === "country"){
     K.classList.remove("show");
     T.textContent = t("countryAll")(ctryName(ctab));
-    const list = CITIES.filter(c => ctryOf(c) === ctab && campusesOf(c.id).length);
-    C.textContent = t("countLine")(list.length, list.reduce((s,c) => s + campusesOf(c.id).length, 0));
+    const list = CITIES.filter(c => ctryOf(c) === ctab && (campusesOf(c.id).length || CTRY[ctab].cityOnly));
+    const total = list.reduce((s,c) => s + campusesOf(c.id).length, 0);
+    C.textContent = total ? t("countLine")(list.length, total) : t("cityOnlyCount")(list.length);
     const listHTML = list.map(c => {
       const cs = campusesOf(c.id);
       const brands = [...new Set(cs.map(x => x.school))];
       const nm = cityName(c);
       return `<div class="row" role="button" tabindex="0" onclick="goCity('${c.id}')">
-        <div class="badge" style="background:${brands.length > 1 ? 'var(--navy)' : SCHOOLS[brands[0]].col}">${cs.length}</div>
+        <div class="badge" style="background:${brands.length === 1 ? SCHOOLS[brands[0]].col : 'var(--navy)'}">${cs.length || "›"}</div>
         <div class="rmain"><div class="rt">${esc(nm)}${nm !== c.en ? ` <span>${esc(c.en)}</span>` : ""}</div>
         <div class="rs">${esc(cityTr(c,"feat"))}</div></div><div class="chev">›</div></div>`;
     }).join("") || `<div class="empty">${t("noBrandCampus")}</div>`;
@@ -674,13 +889,13 @@ function paint(){
       <p class="desc">${esc(cityTr(c,"intro"))}</p>
       <div class="tags">${cityTr(c,"tags").map(x => `<span class="tag">${esc(x)}</span>`).join("")}</div></div>
       <div class="sec" style="border-bottom:none"><p class="st">${t("citySchools")}</p>
-      ${cs.map(x => {
+      ${cs.length ? cs.map(x => {
         return `<div class="row" style="margin:0 -16px;padding-left:16px;padding-right:16px" role="button" tabindex="0" onclick="goCampus('${x.id}')">
           ${badgeHTML(x.school)}
           <div class="rmain"><div class="rt">${esc(x.name)}</div>
           <div class="rs">${esc(schoolTr(x.school,"tag"))}</div></div>
           <div class="chev">›</div></div>`;
-      }).join("")}</div>`;
+      }).join("") : `<div class="empty" style="padding:18px 0">${t("cityNoCampus")}</div>`}</div>`;
   }
   else {
     K.classList.add("show");
@@ -749,7 +964,9 @@ function paintIntro(){
     const cs = CAMPUSES.filter(c => ctryOf(city(c.city)) === k);
     const cities = new Set(cs.map(c => c.city));
     const brands = new Set(cs.map(c => c.school));
-    $("#stat-" + k).textContent = t("introStat")(cities.size, brands.size, cs.length);
+    $("#stat-" + k).textContent = cs.length
+      ? t("introStat")(cities.size, brands.size, cs.length)
+      : t("introStatCityOnly")(CITIES.filter(c => ctryOf(c) === k).length);
     const cn = $("#cn-" + k); if(cn) cn.textContent = ctryName(k);
   });
 }

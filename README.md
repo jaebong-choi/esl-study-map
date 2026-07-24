@@ -1,14 +1,14 @@
-# ESL Study Map — 영국 · 아일랜드 · 몰타 어학연수 지도
+# ESL Study Map — 영국 · 아일랜드 · 몰타 · 캐나다 · 호주 · 뉴질랜드 어학연수 지도
 
-영국·아일랜드·몰타의 어학원 캠퍼스와 기숙사를 지도에서 탐색하는 무료 정보 지도입니다. 특정 유학원·기관과 무관하며, 학교별 상세 정보는 각 어학원 공식 홈페이지로 연결됩니다.
+6개국의 어학원 캠퍼스와 기숙사를 지도에서 탐색하는 무료 정보 지도입니다. 특정 유학원·기관과 무관하며, 학교별 상세 정보는 각 어학원 공식 홈페이지로 연결됩니다.
 
 ## 주요 기능
 
-- **국가 → 도시 → 캠퍼스 드릴다운** — Leaflet + CartoDB Voyager 지도에서 단계별 탐색
-- **13개 어학원 브랜드, 40+ 캠퍼스** — Kaplan · EC · Bayswater · CES · English Path · Emerald · Atlas · IELS · CEA · IH London · LSI · St Giles · ILSC (브랜드 컬러 약칭 배지)
+- **국가 → 도시 → 캠퍼스 드릴다운** — Leaflet + CartoDB Voyager 지도에서 단계별 탐색 (6개국 · 30+ 도시 · 85+ 캠퍼스)
+- **20개 어학원 브랜드 로고** — Kaplan · EC · Bayswater · CES · English Path · Emerald · Atlas · IELS · CEA · IH London · LSI · St Giles · ILSC · ILAC · GV · Greenwich · Navitas · Impact · ALS · NZLC (`logos/` 로컬 에셋)
 - **기숙사 마커** — 캠퍼스 선택 시 소속 기숙사 위치·타입·통학 정보 표시
-- **학교 공식 홈페이지 연결** — 캠퍼스 상세에서 각 브랜드 공식 사이트와 Google 지도 위치로 바로 이동
-- **국가별 공식 정보** — English UK / ACELS / FELTOM 인증기관과 정부 비자 공식 안내 링크
+- **학교 공식 홈페이지 연결** — 캠퍼스 상세에서 각 브랜드 공식 사이트와 Google 지도 위치로 바로 이동 (20개 URL 전수 검증)
+- **국가별 공식 정보** — English UK / ACELS / FELTOM / Languages Canada / English Australia / English New Zealand 인증기관과 정부 비자 공식 안내 링크
 - **3개 언어** — 한국어 / English / 繁體中文 (UI·데이터·기숙사 구문 번역)
 
 ## 구조
