@@ -222,7 +222,9 @@ a:focus-visible,button:focus-visible,.row:focus-visible{outline:2px solid var(--
   transition:color .25s ease;pointer-events:none}
 .switch-icon.icon-moon{left:6px}
 .switch-icon.icon-sun{right:6px;color:#fff}
-.switch-label{font-size:12px;font-weight:600;color:var(--mut);letter-spacing:-.01em;width:30px;text-align:left}
+/* "라이트"(3글자) 줄바꿈 방지. "다크"와 폭을 맞춰 전환 시 헤더가 흔들리지 않게 한다. */
+.switch-label{font-size:12px;font-weight:600;color:var(--mut);letter-spacing:-.01em;
+  min-width:40px;white-space:nowrap;text-align:left}
 
 html[data-theme="dark"] .switch-track{border-color:#454c55;background:#22262c}
 html[data-theme="dark"] .theme-switch:hover .switch-track{border-color:#8b939c}
