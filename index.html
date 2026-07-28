@@ -93,7 +93,6 @@ header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgb
 .cc-ca{background-image:linear-gradient(rgba(5,15,30,.18),rgba(5,15,30,.42)),url('img/ca.jpg'),linear-gradient(120deg,#c8102e,#8f1624 55%,#3a4a58)}
 .cc-au{background-image:linear-gradient(rgba(5,15,30,.18),rgba(5,15,30,.42)),url('img/au.jpg'),linear-gradient(120deg,#0b3d6b,#0a2a4a 55%,#c9a012)}
 .cc-nz{background-image:linear-gradient(rgba(5,15,30,.18),rgba(5,15,30,.42)),url('img/nz.jpg'),linear-gradient(120deg,#0f2b46,#0a1c30 55%,#2e7d64)}
-.cc-flag{position:absolute;right:18px;bottom:8px;font-size:38px;opacity:.92;text-shadow:0 2px 8px rgba(0,0,0,.4)}
 .cc-img .cc-cap{position:absolute;left:18px;bottom:12px;font-size:11px;letter-spacing:.14em;color:rgba(255,255,255,.75);font-weight:700;text-transform:uppercase}
 .cc-main{display:flex;align-items:center;justify-content:space-between;padding:15px 18px}
 .cc-name{font-size:18px;font-weight:800;letter-spacing:-.02em}
@@ -109,7 +108,6 @@ header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgb
   .cc-name span{font-size:10.5px;margin-left:6px}
   .cc-stat{font-size:11.5px}
   .cc-go{font-size:12px}
-  .cc-flag{font-size:32px;right:14px}
 }
 .quick{display:flex;gap:8px;justify-content:center;margin-top:22px;flex-wrap:wrap}
 .quick a{font-size:12px;color:#9aa4af;text-decoration:none;border:1px solid rgba(255,255,255,.16);
@@ -374,7 +372,7 @@ html:not([data-theme="dark"]) #intro .langs button.on{background:#0F2B46;color:#
     <p class="sub" id="isub">국가와 도시를 고르고, 어학원을 비교하고, 공식 홈페이지까지 바로.<br>특정 유학원과 무관한 무료 어학연수 지도입니다.</p>
     <div class="cc-grid">
     <div class="cc" onclick="selectCountry('uk')">
-      <div class="cc-img cc-uk"><span class="cc-cap">United Kingdom</span><span class="cc-flag">🇬🇧</span></div>
+      <div class="cc-img cc-uk"><span class="cc-cap">United Kingdom</span></div>
       <div class="cc-main">
         <div>
           <div class="cc-name"><b id="cn-uk" style="font-weight:inherit">영국</b><span>UK</span></div>
@@ -384,7 +382,7 @@ html:not([data-theme="dark"]) #intro .langs button.on{background:#0F2B46;color:#
       </div>
     </div>
     <div class="cc" onclick="selectCountry('ie')">
-      <div class="cc-img cc-ie"><span class="cc-cap">Ireland</span><span class="cc-flag">🇮🇪</span></div>
+      <div class="cc-img cc-ie"><span class="cc-cap">Ireland</span></div>
       <div class="cc-main">
         <div>
           <div class="cc-name"><b id="cn-ie" style="font-weight:inherit">아일랜드</b><span>IRELAND</span></div>
@@ -394,7 +392,7 @@ html:not([data-theme="dark"]) #intro .langs button.on{background:#0F2B46;color:#
       </div>
     </div>
     <div class="cc" onclick="selectCountry('mt')">
-      <div class="cc-img cc-mt"><span class="cc-cap">Malta</span><span class="cc-flag">🇲🇹</span></div>
+      <div class="cc-img cc-mt"><span class="cc-cap">Malta</span></div>
       <div class="cc-main">
         <div>
           <div class="cc-name"><b id="cn-mt" style="font-weight:inherit">몰타</b><span>MALTA</span></div>
@@ -404,7 +402,7 @@ html:not([data-theme="dark"]) #intro .langs button.on{background:#0F2B46;color:#
       </div>
     </div>
     <div class="cc" onclick="selectCountry('ca')">
-      <div class="cc-img cc-ca"><span class="cc-cap">Canada</span><span class="cc-flag">🇨🇦</span></div>
+      <div class="cc-img cc-ca"><span class="cc-cap">Canada</span></div>
       <div class="cc-main">
         <div>
           <div class="cc-name"><b id="cn-ca" style="font-weight:inherit">캐나다</b><span>CANADA</span></div>
@@ -414,7 +412,7 @@ html:not([data-theme="dark"]) #intro .langs button.on{background:#0F2B46;color:#
       </div>
     </div>
     <div class="cc" onclick="selectCountry('au')">
-      <div class="cc-img cc-au"><span class="cc-cap">Australia</span><span class="cc-flag">🇦🇺</span></div>
+      <div class="cc-img cc-au"><span class="cc-cap">Australia</span></div>
       <div class="cc-main">
         <div>
           <div class="cc-name"><b id="cn-au" style="font-weight:inherit">호주</b><span>AUSTRALIA</span></div>
@@ -424,7 +422,7 @@ html:not([data-theme="dark"]) #intro .langs button.on{background:#0F2B46;color:#
       </div>
     </div>
     <div class="cc" onclick="selectCountry('nz')">
-      <div class="cc-img cc-nz"><span class="cc-cap">New Zealand</span><span class="cc-flag">🇳🇿</span></div>
+      <div class="cc-img cc-nz"><span class="cc-cap">New Zealand</span></div>
       <div class="cc-main">
         <div>
           <div class="cc-name"><b id="cn-nz" style="font-weight:inherit">뉴질랜드</b><span>NEW ZEALAND</span></div>
