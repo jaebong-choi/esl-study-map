@@ -77,8 +77,16 @@ header{position:fixed;top:0;left:0;right:0;height:52px;z-index:30;background:rgb
 /* ── 인트로 오버레이 ── */
 #intro{position:fixed;inset:0;z-index:50;background:linear-gradient(168deg,#000 0%,#0a1420 55%,#0F2B46 100%);
   display:none;overflow-y:auto;color:#f5f5f7}
-#intro.show{display:flex;flex-direction:column;align-items:center;justify-content:center}
+/* justify-content:center 는 내용이 화면보다 길 때 위쪽 넘침을 스크롤로 닿을 수 없게 만든다.
+   safe center 를 쓰면 넘칠 때만 flex-start 처럼 동작해 첫 카드가 잘리지 않는다.
+   (safe 키워드를 모르는 브라우저는 앞줄의 center 를 그대로 쓴다) */
+#intro.show{display:flex;flex-direction:column;align-items:center;
+  justify-content:center;justify-content:safe center}
+/* 상단 고정 버튼(처음으로 · 모드 전환) 아래로 내용이 숨지 않도록 여백을 준다 */
 .intro-in{width:min(480px,92vw);padding:48px 0 24px;text-align:center}
+@media(max-width:700px){
+  .intro-in{padding-top:76px}
+}
 .intro-brand{height:24px;filter:brightness(0) invert(1);opacity:.92;margin-bottom:28px}
 #intro h1{font-size:clamp(26px,6vw,34px);font-weight:900;letter-spacing:-.03em;line-height:1.25;margin-bottom:10px}
 #intro .sub{font-size:14.5px;color:#9aa4af;line-height:1.65;margin-bottom:30px;font-weight:400}
